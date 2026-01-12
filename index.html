@@ -899,12 +899,88 @@
             currentCharEl = null;
         }
 
+        // Find phrase that may span multiple columns, returns {phrase, segments}
+        // where segments is array of {colIndex, startIdx, length}
+        function findPhraseForChar(colIndex, charIndex) {
+            const column = textLayout[colIndex];
+
+            // First, try to find phrase entirely within this column
+            for (const p of phrases) {
+                const phraseStart = column.chars.indexOf(p.chars);
+                if (phraseStart !== -1 && charIndex >= phraseStart && charIndex < phraseStart + p.chars.length) {
+                    return { phrase: p, segments: [{ colIndex, startIdx: phraseStart, length: p.chars.length }] };
+                }
+            }
+
+            // Check for phrases spanning from previous column into this one
+            // (In reading order: previous column is colIndex - 1)
+            if (colIndex > 0) {
+                const prevCol = textLayout[colIndex - 1];
+                for (const p of phrases) {
+                    // Check if phrase starts at end of previous column and continues here
+                    for (let splitPoint = 1; splitPoint < p.chars.length; splitPoint++) {
+                        const firstPart = p.chars.substring(0, splitPoint);
+                        const secondPart = p.chars.substring(splitPoint);
+
+                        // Check if firstPart is at END of previous column
+                        if (prevCol.chars.endsWith(firstPart) && column.chars.startsWith(secondPart)) {
+                            const prevStartIdx = prevCol.chars.length - firstPart.length;
+                            // Check if current char is in this phrase
+                            if (charIndex < secondPart.length) {
+                                return {
+                                    phrase: p,
+                                    segments: [
+                                        { colIndex: colIndex - 1, startIdx: prevStartIdx, length: firstPart.length },
+                                        { colIndex: colIndex, startIdx: 0, length: secondPart.length }
+                                    ]
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Check for phrases spanning from this column into next one
+            if (colIndex < textLayout.length - 1) {
+                const nextCol = textLayout[colIndex + 1];
+                for (const p of phrases) {
+                    for (let splitPoint = 1; splitPoint < p.chars.length; splitPoint++) {
+                        const firstPart = p.chars.substring(0, splitPoint);
+                        const secondPart = p.chars.substring(splitPoint);
+
+                        // Check if firstPart is at END of this column
+                        if (column.chars.endsWith(firstPart) && nextCol.chars.startsWith(secondPart)) {
+                            const startIdx = column.chars.length - firstPart.length;
+                            // Check if current char is in this phrase
+                            if (charIndex >= startIdx) {
+                                return {
+                                    phrase: p,
+                                    segments: [
+                                        { colIndex: colIndex, startIdx: startIdx, length: firstPart.length },
+                                        { colIndex: colIndex + 1, startIdx: 0, length: secondPart.length }
+                                    ]
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Fallback: find any phrase containing this character (no highlight)
+            for (const p of phrases) {
+                if (p.chars.includes(column.chars[charIndex])) {
+                    return { phrase: p, segments: [] };
+                }
+            }
+
+            return { phrase: null, segments: [] };
+        }
+
         function updateDisplay(charEl) {
             const char = charEl.dataset.char;
             const colIndex = parseInt(charEl.dataset.colIndex);
             const charIndex = parseInt(charEl.dataset.charIndex);
             const sectionId = charEl.dataset.section;
-            const column = textLayout[colIndex];
 
             // Clear all highlights
             document.querySelectorAll('.char').forEach(el => {
@@ -916,26 +992,10 @@
             // Highlight current character (RED)
             charEl.classList.add('char-highlight');
 
-            // Find and highlight phrase (BLUE)
-            let foundPhrase = null;
-            for (const p of phrases) {
-                const phraseStart = column.chars.indexOf(p.chars);
-                if (phraseStart !== -1 && charIndex >= phraseStart && charIndex < phraseStart + p.chars.length) {
-                    foundPhrase = p;
-                    // Draw phrase highlight box
-                    drawPhraseHighlight(colIndex, phraseStart, p.chars.length);
-                    break;
-                }
-            }
-
-            // If no exact match in this column, find phrase containing this char
-            if (!foundPhrase) {
-                for (const p of phrases) {
-                    if (p.chars.includes(char)) {
-                        foundPhrase = p;
-                        break;
-                    }
-                }
+            // Find and highlight phrase (BLUE) - handles multi-column phrases
+            const { phrase: foundPhrase, segments } = findPhraseForChar(colIndex, charIndex);
+            for (const seg of segments) {
+                drawPhraseHighlight(seg.colIndex, seg.startIdx, seg.length);
             }
 
             // Highlight section (GREEN) - draw rectangle around column groups

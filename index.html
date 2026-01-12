@@ -59,21 +59,20 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 10px;
         }
 
         .slider-container label {
-            min-width: 150px;
+            min-width: 180px;
             font-weight: bold;
         }
 
         .slider-container input[type="range"] {
             flex: 1;
-            max-width: 300px;
+            max-width: 400px;
         }
 
         .slider-container span {
-            min-width: 50px;
+            min-width: 120px;
         }
 
         .main-content {
@@ -91,10 +90,10 @@
             border: 2px solid #8b4513;
             border-radius: 8px;
             overflow: hidden;
-            /* Match original image aspect ratio approximately */
             aspect-ratio: 1 / 1;
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
+            cursor: pointer;
         }
 
         .original-image {
@@ -110,7 +109,6 @@
 
         .document {
             position: absolute;
-            /* Position over the biographical record area */
             top: 2%;
             right: 1%;
             width: 60%;
@@ -151,23 +149,38 @@
             cursor: pointer;
             padding: 0.5px 1px;
             border-radius: 2px;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             display: block;
-            color: #228B22;
+            color: rgba(45, 30, 20, var(--text-opacity, 1));
             background: rgba(255, 254, 249, var(--text-bg-opacity, 0.9));
         }
 
         .char:hover {
-            background: #ffd700;
-            transform: scale(1.15);
+            transform: scale(1.1);
         }
 
-        .char.highlighted {
-            background: #87ceeb;
+        .char.char-highlight {
+            outline: 2px solid #e74c3c;
+            outline-offset: 1px;
+            z-index: 10;
+        }
+
+        .char.phrase-highlight {
+            outline: 2px solid #3498db;
+            outline-offset: 1px;
+        }
+
+        .char.section-highlight {
+            outline: 2px solid #27ae60;
+            outline-offset: 2px;
+        }
+
+        .char.locked {
+            background: #ffeaa7 !important;
         }
 
         .info-panel {
-            width: 350px;
+            width: 400px;
             background: #fff;
             border: 2px solid #8b4513;
             border-radius: 8px;
@@ -187,124 +200,198 @@
             font-size: 1.2em;
         }
 
-        .character-display {
-            font-size: 64px;
-            text-align: center;
-            padding: 15px;
-            background: #f5f0e6;
+        /* Character Level */
+        .char-info-box {
+            border: 2px solid #e74c3c;
             border-radius: 8px;
-            margin-bottom: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #fdf2f2;
+        }
+
+        .char-info-box h3 {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .char-info-box h3::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #e74c3c;
+            border-radius: 2px;
+        }
+
+        .character-display {
+            font-size: 56px;
+            text-align: center;
+            padding: 10px;
+            background: #fff;
+            border-radius: 6px;
+            margin-bottom: 8px;
         }
 
         .pinyin {
             font-size: 1.1em;
             color: #8b4513;
             text-align: center;
-            margin-bottom: 12px;
-        }
-
-        .info-section {
-            margin-bottom: 12px;
-        }
-
-        .info-section h3 {
-            color: #333;
-            font-size: 0.95em;
-            margin-bottom: 5px;
-        }
-
-        .info-section p {
-            color: #555;
-            line-height: 1.5;
-            font-size: 0.9em;
-        }
-
-        .meaning {
-            background: #f9f9f9;
-            padding: 10px;
-            border-radius: 6px;
-        }
-
-        .context {
-            background: #e8f4e8;
-            padding: 10px;
-            border-radius: 6px;
-        }
-
-        .section-nav {
-            margin-top: 15px;
-            padding-top: 12px;
-            border-top: 1px solid #ccc;
-        }
-
-        .section-nav h3 {
             margin-bottom: 8px;
-            color: #8b4513;
-            font-size: 0.95em;
         }
 
-        .section-nav button {
-            display: block;
-            width: 100%;
-            padding: 6px 10px;
-            margin-bottom: 4px;
-            background: #f5f0e6;
-            border: 1px solid #8b4513;
-            border-radius: 4px;
-            cursor: pointer;
-            text-align: left;
+        .char-meaning {
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .char-context {
             font-size: 0.85em;
+            color: #666;
+            margin-top: 6px;
+            font-style: italic;
         }
 
-        .section-nav button:hover {
-            background: #8b4513;
-            color: white;
-        }
-
-        details.translation-panel {
-            background: #fff;
-            padding: 15px;
+        /* Phrase Level */
+        .phrase-info-box {
+            border: 2px solid #3498db;
             border-radius: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #8b4513;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #f0f7fd;
         }
 
-        details.translation-panel summary {
-            cursor: pointer;
+        .phrase-info-box h3 {
+            color: #3498db;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .phrase-info-box h3::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #3498db;
+            border-radius: 2px;
+        }
+
+        .phrase-chinese {
+            font-size: 1.3em;
+            text-align: center;
+            padding: 8px;
+            background: #fff;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .phrase-translation {
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .phrase-notes {
+            font-size: 0.85em;
+            color: #555;
+            background: #e8f4fc;
+            padding: 8px;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+
+        /* Section Level */
+        .section-info-box {
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #f0fdf4;
+        }
+
+        .section-info-box h3 {
+            color: #27ae60;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .section-info-box h3::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #27ae60;
+            border-radius: 2px;
+        }
+
+        .section-title {
+            font-size: 1.1em;
             font-weight: bold;
-            color: #8b4513;
+            color: #1e8449;
+            margin-bottom: 6px;
         }
 
-        details.translation-panel[open] summary {
-            margin-bottom: 10px;
+        .section-chinese {
+            font-size: 0.95em;
+            color: #27ae60;
+            margin-bottom: 8px;
         }
 
-        .translation-content {
+        .section-description {
             font-size: 0.9em;
             line-height: 1.6;
+            color: #333;
         }
 
-        .translation-content blockquote {
-            background: #f5f0e6;
-            padding: 12px;
-            border-left: 3px solid #8b4513;
-            margin: 10px 0;
+        .lock-indicator {
+            text-align: center;
+            padding: 6px;
+            background: #ffeaa7;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            font-size: 0.85em;
+            color: #856404;
         }
 
-        .translation-content h4 {
-            color: #8b4513;
-            margin: 15px 0 8px;
+        .legend {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            font-size: 0.8em;
         }
 
-        .translation-content ul {
-            padding-left: 20px;
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .translation-content li {
-            margin-bottom: 5px;
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
         }
 
-        @media (max-width: 900px) {
+        .legend-color.char { border: 2px solid #e74c3c; }
+        .legend-color.phrase { border: 2px solid #3498db; }
+        .legend-color.section { border: 2px solid #27ae60; }
+
+        @media (max-width: 1000px) {
             .main-content {
                 flex-direction: column;
             }
@@ -321,81 +408,20 @@
         <header>
             <h1>鮑公恆齋生壙志</h1>
             <p>Burial Record of Mr. Bao Zhetai (style name Hengzhai)</p>
-            <p style="font-size: 0.85em; margin-top: 3px;">From the Bao Family Genealogy of Southern Yin County (鄞南鮑氏宗譜)</p>
+            <p style="font-size: 0.85em; margin-top: 3px;">From the Bao Family Genealogy of Gouyu (句俞鮑氏宗譜), Volume 6</p>
         </header>
 
         <div class="controls">
-            <h3>Display Controls</h3>
             <div class="slider-container">
-                <label>Original Image Opacity:</label>
-                <input type="range" id="imageOpacity" min="0" max="100" value="0">
-                <span id="imageOpacityValue">0%</span>
-            </div>
-            <div class="slider-container">
-                <label>Text Background:</label>
-                <input type="range" id="textBgOpacity" min="0" max="100" value="90">
-                <span id="textBgOpacityValue">90%</span>
-            </div>
-            <hr style="margin: 10px 0;">
-            <h3>Alignment Controls (Segment 25: 天鳳之山...)</h3>
-            <div class="slider-container">
-                <label>X Position:</label>
-                <input type="range" id="alignX" min="-300" max="500" value="0">
-                <span id="alignXValue">0px</span>
-            </div>
-            <div class="slider-container">
-                <label>Y Position:</label>
-                <input type="range" id="alignY" min="0" max="600" value="0">
-                <span id="alignYValue">0px</span>
-            </div>
-            <div class="slider-container">
-                <label>Font Size:</label>
-                <input type="range" id="alignSize" min="8" max="48" value="16" step="0.5">
-                <span id="alignSizeValue">16px</span>
-            </div>
-            <div class="slider-container">
-                <label>Line Spacing:</label>
-                <input type="range" id="alignSpacing" min="80" max="160" value="113">
-                <span id="alignSpacingValue">1.13</span>
-            </div>
-            <button onclick="resetAlignment()" style="padding: 4px 12px; margin-top: 5px;">Reset</button>
-            <div style="margin-top: 8px; padding: 8px; background: #e8f4e8; border-radius: 4px;">
-                <strong>Current values:</strong> <code id="currentValues">x:0, y:0, size:16, spacing:1.15</code>
+                <label>Overlay Visibility:</label>
+                <input type="range" id="overlaySlider" min="0" max="100" value="50">
+                <span id="overlayValue">Original + Overlay blended</span>
             </div>
         </div>
 
-        <details class="translation-panel">
-            <summary>Full Translation & Historical Context (Click to expand)</summary>
-            <div class="translation-content">
-                <h4>Translation:</h4>
-                <blockquote>
-                    <p><strong>Burial Record of Mr. Bao, style name Hengzhai</strong> (鮑公恆齋生壙志)</p>
-                    <p style="font-size: 0.9em; color: #666;"><em>壙志 (kuàngzhì) is a burial/tomb inscription, a formal document placed with or near the deceased.</em></p>
-                    <p>The gentleman's personal name (諱) was <em>Zhetai</em> (哲泰), his style name (字) <em>Hengzhai</em> (恆齋).
-                    His surname was Bao. For generations his family lived in Baojiadai, Nantang Township, southern Yin County.</p>
-                    <p><em>[His great-grandfather, grandfather, and father are listed.]</em></p>
-                    <p>From childhood he was diligent and frugal, sincere and upright. The village praised his goodness.</p>
-                    <p>He worked on fishing boats along the Jiangsu-Zhejiang coast.
-                    At age thirty he went to Shanghai, entered the clothing trade, managed operations skillfully, and achieved solid profits.</p>
-                    <p>He delighted in doing good and giving charitably, helping others as if helping himself. His community respected him.</p>
-                    <p>He married Madam Chen. They had three sons and four daughters.</p>
-                    <p>He died in the 4th year of the Republic (1915), on the 27th day of the 9th month, at age sixty.</p>
-                    <p>He was buried at [mountain name], facing [direction], with auspicious geomantic form.</p>
-                </blockquote>
-
-                <h4>Historical Significance:</h4>
-                <ul>
-                    <li><strong>Dates:</strong> Born c. 1855-1856, died 1915.</li>
-                    <li><strong>Rural-to-Urban Migration:</strong> Moved from fishing to Shanghai clothing trade around 1885.</li>
-                    <li><strong>Merchant Success:</strong> Records a merchant's life, not a scholar-official.</li>
-                    <li><strong>Ningbo Connection:</strong> Yin County is part of modern Ningbo.</li>
-                </ul>
-            </div>
-        </details>
-
         <div class="main-content">
             <div class="document-area">
-                <div class="document-container">
+                <div class="document-container" id="documentContainer">
                     <img src="original.png" alt="Original document" class="original-image" id="originalImage">
                     <div class="document" id="document">
                         <!-- Content generated by JavaScript -->
@@ -404,311 +430,567 @@
             </div>
 
             <div class="info-panel" id="info-panel">
-                <h2>Character Information</h2>
-                <div class="character-display" id="char-display">鮑</div>
-                <div class="pinyin" id="pinyin">bào</div>
+                <h2>Document Reader</h2>
 
-                <div class="info-section meaning">
-                    <h3>Meaning</h3>
-                    <p id="meaning">A surname; also means salted fish</p>
+                <div id="lockIndicator" class="lock-indicator" style="display: none;">
+                    Locked - click document to unlock
                 </div>
 
-                <div class="info-section context">
-                    <h3>Context</h3>
-                    <p id="context">The family surname of the subject.</p>
+                <div class="section-info-box" id="sectionBox">
+                    <h3>Section</h3>
+                    <div class="section-title" id="sectionTitle">Book Spine</div>
+                    <div class="section-chinese" id="sectionChinese">書脊</div>
+                    <div class="section-description" id="sectionDesc">The outer cover of the genealogy volume, showing the clan name, volume number, and publishing hall.</div>
                 </div>
 
-                <div class="section-nav">
-                    <h3>Document Sections</h3>
-                    <button onclick="scrollToSection('title')">Title (生境志標題)</button>
-                    <button onclick="scrollToSection('ancestry')">Name & Origins (姓名籍貫)</button>
-                    <button onclick="scrollToSection('family_background')">Ancestors (先世父母)</button>
-                    <button onclick="scrollToSection('character')">Character (品德)</button>
-                    <button onclick="scrollToSection('occupation')">Occupation (職業經歷)</button>
-                    <button onclick="scrollToSection('family')">Marriage & Children (婚姻子女)</button>
-                    <button onclick="scrollToSection('death')">Death (卒)</button>
-                    <button onclick="scrollToSection('burial')">Burial & Fengshui (葬地風水)</button>
-                    <button onclick="scrollToSection('marker')">Source (出處)</button>
+                <div class="phrase-info-box" id="phraseBox">
+                    <h3>Phrase</h3>
+                    <div class="phrase-chinese" id="phraseChinese">句俞鮑氏宗譜</div>
+                    <div class="phrase-translation" id="phraseTranslation">"Bao Clan Genealogy of Gouyu"</div>
+                    <div class="phrase-notes" id="phraseNotes">Gouyu (句俞) is an ancient name for the Siming Mountains region in Ningbo/Yuyao. This title indicates this is a comprehensive genealogical record of the Bao family from this area.</div>
+                </div>
+
+                <div class="char-info-box" id="charBox">
+                    <h3>Character</h3>
+                    <div class="character-display" id="charDisplay">鮑</div>
+                    <div class="pinyin" id="pinyin">bào</div>
+                    <div class="char-meaning" id="charMeaning">Surname Bao; also means salted fish</div>
+                    <div class="char-context" id="charContext">The family surname. An important clan in the Ningbo region.</div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color section"></div> Section</div>
+                    <div class="legend-item"><div class="legend-color phrase"></div> Phrase</div>
+                    <div class="legend-item"><div class="legend-color char"></div> Character</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Character dictionary
-        const characterData = {
-            '壙': { pinyin: 'kuàng', meaning: 'Tomb, burial pit', context: '壙志 = burial inscription/tomb record. A formal document placed in or near the tomb.' },
-            // Book spine characters
-            '句': { pinyin: 'gōu', meaning: 'Phrase; (place name)', context: '句俞 (Gouyu) = ancient name for Siming Mountains region in Ningbo/Yuyao.' },
-            '俞': { pinyin: 'yú', meaning: 'Surname; to consent', context: '句俞 (Gouyu) = ancient geographic name for the Siming Mountain area in Ningbo/Yuyao.' },
-            '宗': { pinyin: 'zōng', meaning: 'Clan, ancestors', context: '宗譜 = clan genealogy, ancestral record.' },
-            '譜': { pinyin: 'pǔ', meaning: 'Register, record', context: '宗譜 = genealogy, family register.' },
-            '卷': { pinyin: 'juàn', meaning: 'Volume, scroll', context: '卷六 = Volume 6 of the genealogy.' },
-            '六': { pinyin: 'liù', meaning: 'Six', context: 'Volume number.' },
-            '正': { pinyin: 'zhèng', meaning: 'Upright, correct, orthodox', context: '正始堂 = "Hall of Upright Beginnings" - the family\'s hall name (堂號).' },
-            '始': { pinyin: 'shǐ', meaning: 'Beginning, origin', context: '正始堂 = the ancestral hall name for this branch of the Bao family.' },
-            '堂': { pinyin: 'táng', meaning: 'Hall, main room', context: '堂號 = hall name, distinguishes branches of a clan. Would be hung over the ancestral hall entrance.' },
-            // Attribution/credit characters
-            '同': { pinyin: 'tóng', meaning: 'Same, together', context: '同邑 = from the same district/town.' },
-            '邑': { pinyin: 'yì', meaning: 'District, town, city', context: '同邑 = fellow townsman, from the same locality.' },
-            '張': { pinyin: 'zhāng', meaning: 'Surname Zhang; to stretch', context: 'Surname of the author Zhang Meiyi (張美翊, 1856-1924), a prominent Ningbo scholar.' },
-            '美': { pinyin: 'měi', meaning: 'Beautiful, fine', context: 'Part of author\'s name Zhang Meiyi (張美翊).' },
-            '翊': { pinyin: 'yì', meaning: 'To assist, wings', context: 'Part of author\'s name Zhang Meiyi (張美翊).' },
-            '撰': { pinyin: 'zhuàn', meaning: 'To compose, write', context: '撰文 = composed the text.' },
-            '文': { pinyin: 'wén', meaning: 'Text, writing, literature', context: '撰文 = composed the text/article.' },
-            '書': { pinyin: 'shū', meaning: 'To write; book', context: '書丹 = wrote in cinnabar (calligraphy credit).' },
-            '丹': { pinyin: 'dān', meaning: 'Cinnabar, red', context: '書丹 = wrote the characters in red ink for stone carving. Traditional epigraphy term.' },
-            // Feng shui burial location
-            '鳳': { pinyin: 'fèng', meaning: 'Phoenix', context: '天鳳山 = Tianfeng Mountain, the burial location.' },
-            '麓': { pinyin: 'lù', meaning: 'Foot of a hill/mountain', context: 'The tomb is at the foot of the mountain.' },
-            '墓': { pinyin: 'mù', meaning: 'Tomb, grave', context: '墓向 = tomb orientation.' },
-            '向': { pinyin: 'xiàng', meaning: 'To face, direction', context: 'Used in feng shui to indicate facing direction.' },
-            '坐': { pinyin: 'zuò', meaning: 'To sit; (feng shui) back/sitting direction', context: '坐酉 = sits in the West direction (back of tomb faces West).' },
-            '酉': { pinyin: 'yǒu', meaning: 'West (compass direction)', context: 'One of the 12 Earthly Branches, represents West in feng shui compass.' },
-            '兼': { pinyin: 'jiān', meaning: 'Combined with, also', context: 'Indicates compound compass reading with slight deviation.' },
-            '環': { pinyin: 'huán', meaning: 'To surround, encircle', context: '山環水抱 = mountains surround and water embraces.' },
-            '抱': { pinyin: 'bào', meaning: 'To embrace, hold', context: '山環水抱 = classic feng shui idiom for ideal location.' },
-            '當': { pinyin: 'dāng', meaning: 'To match, befit', context: 'The auspicious landscape befits his descendants.' },
-            '嗣': { pinyin: 'sì', meaning: 'Heir, descendant', context: '嗣人 = heirs, descendants who will benefit from good feng shui.' },
-            '蔭': { pinyin: 'yìn', meaning: 'To shade, protect, shelter', context: '當蔭其嗣人 = will shelter/bless his descendants. Refers to ancestral protection extending to future generations.' },
-            // Phoenix mountain poetry
-            '天': { pinyin: 'tiān', meaning: 'Heaven, sky', context: '天鳳山 = Tianfeng (Heavenly Phoenix) Mountain.' },
-            '之': { pinyin: 'zhī', meaning: 'Of, possessive particle', context: 'Classical Chinese possessive marker.' },
-            '形': { pinyin: 'xíng', meaning: 'Shape, form', context: '形勢 = topography, landscape configuration.' },
-            '勢': { pinyin: 'shì', meaning: 'Force, momentum, configuration', context: '形勢 = the shape and momentum of the landscape.' },
-            '飛': { pinyin: 'fēi', meaning: 'To fly', context: '飛翔 = soaring in flight, like a phoenix.' },
-            '翔': { pinyin: 'xiáng', meaning: 'To soar, glide', context: 'The mountain resembles a phoenix soaring.' },
-            '采': { pinyin: 'cǎi', meaning: 'Color, plumage, luster', context: '華采 = splendid plumage.' },
-            '翼': { pinyin: 'yì', meaning: 'Wing', context: 'The phoenix\'s wings.' },
-            '和': { pinyin: 'hé', meaning: 'Harmony, harmonious', context: '和鳴 = singing in harmony.' },
-            '鳴': { pinyin: 'míng', meaning: 'To cry, call (of bird)', context: 'The phoenix\'s song.' },
-            '鏘': { pinyin: 'qiāng', meaning: 'Clang, ringing sound', context: 'Onomatopoeia for the phoenix\'s melodious cry.' },
-            '卜': { pinyin: 'bǔ', meaning: 'To divine, fortune-telling', context: '卜吉 = divined as auspicious.' },
-            '吉': { pinyin: 'jí', meaning: 'Auspicious, lucky', context: 'This spot was divined as auspicious.' },
-            '此': { pinyin: 'cǐ', meaning: 'This, here', context: '於此 = at this place.' },
-            '子': { pinyin: 'zǐ', meaning: 'Son, child', context: '子孫 = descendants (sons and grandsons).' },
-            '孫': { pinyin: 'sūn', meaning: 'Grandson, descendant', context: '子孫繁昌 = descendants flourish.' },
-            '繁': { pinyin: 'fán', meaning: 'Many, flourishing', context: '繁昌 = flourishing and prosperous.' },
-            '百': { pinyin: 'bǎi', meaning: 'Hundred', context: '百歲 = hundred years, euphemism for end of life.' },
-            '歲': { pinyin: 'suì', meaning: 'Year, age', context: '百歲之後 = after a hundred years (after death).' },
-            '後': { pinyin: 'hòu', meaning: 'After, behind', context: 'After [his death].' },
-            '歸': { pinyin: 'guī', meaning: 'To return', context: '歸全 = return whole, from Classic of Filial Piety.' },
-            '全': { pinyin: 'quán', meaning: 'Whole, complete, perfect', context: '歸全 = return the body intact to the earth as received from parents.' },
-            // Document title and personal info
-            '公': { pinyin: 'gōng', meaning: 'Honorific title; lord, sir', context: 'Respectful title for the subject of this biographical record.' },
-            '恆': { pinyin: 'héng', meaning: 'Constant, permanent, persevering', context: 'Part of style name 恆齋 (Hengzhai) = "Persevering Studio".' },
-            '齋': { pinyin: 'zhāi', meaning: 'Studio, study room', context: 'Part of style name. Common in scholars\' names.' },
-            '生': { pinyin: 'shēng', meaning: 'Life, to be born', context: 'Part of the title, referring to his life.' },
-            '境': { pinyin: 'jìng', meaning: 'Circumstances, situation', context: 'Life circumstances.' },
-            '志': { pinyin: 'zhì', meaning: 'Record, annals', context: '壙志 = burial/tomb record.' },
-            '鮑': { pinyin: 'bào', meaning: 'Surname Bao; salted fish', context: 'The family surname. Notable family in Yin County (Ningbo).' },
-            '諱': { pinyin: 'huì', meaning: 'Taboo name, personal name', context: 'Formal way to introduce someone\'s given name.' },
-            '名': { pinyin: 'míng', meaning: 'Name', context: 'His given name was...' },
-            '哲': { pinyin: 'zhé', meaning: 'Wise, sagacious', context: 'Part of personal name Zhetai (哲泰).' },
-            '泰': { pinyin: 'tài', meaning: 'Great, peaceful', context: 'Part of personal name Zhetai (哲泰).' },
-            '字': { pinyin: 'zì', meaning: 'Style name, courtesy name', context: 'Men received a style name at age 20.' },
-            '姓': { pinyin: 'xìng', meaning: 'Surname', context: 'Introduces the family surname.' },
-            '氏': { pinyin: 'shì', meaning: 'Clan, family', context: 'Added after surnames in formal contexts.' },
-            '世': { pinyin: 'shì', meaning: 'Generation, era', context: 'Used to count generations.' },
-            '為': { pinyin: 'wéi', meaning: 'To be, act as', context: 'Indicates role or status.' },
-            '鄞': { pinyin: 'yín', meaning: 'Yin County', context: 'Ancient county, now part of Ningbo, Zhejiang.' },
-            '南': { pinyin: 'nán', meaning: 'South', context: '鄞南 = southern Yin County.' },
-            '塘': { pinyin: 'táng', meaning: 'Pond, embankment', context: 'Part of Nantang Township (南塘鄉).' },
-            '鄉': { pinyin: 'xiāng', meaning: 'Township, village', context: 'Rural administrative unit.' },
-            '家': { pinyin: 'jiā', meaning: 'Family, home', context: 'Part of village name Baojiadai.' },
-            '埭': { pinyin: 'dài', meaning: 'Dam, embankment', context: '鮑家埭 = Bao Family Embankment.' },
-            '人': { pinyin: 'rén', meaning: 'Person, people', context: 'Indicates origin: "person from..."' },
-            '曾': { pinyin: 'zēng', meaning: 'Great (as in great-grandfather)', context: '曾祖 = great-grandfather.' },
-            '祖': { pinyin: 'zǔ', meaning: 'Grandfather, ancestor', context: 'Used for ancestors.' },
-            '廷': { pinyin: 'tíng', meaning: 'Court, hall', context: 'Part of great-grandfather\'s name 廷揚 (Tingyang).' },
-            '揚': { pinyin: 'yáng', meaning: 'To raise, spread', context: 'Part of great-grandfather\'s name 廷揚 (Tingyang).' },
-            '光': { pinyin: 'guāng', meaning: 'Light, glory', context: 'Part of grandfather\'s name 光華 (Guanghua).' },
-            '華': { pinyin: 'huá', meaning: 'Splendid, China', context: 'Part of grandfather\'s name 光華 (Guanghua). 光華 = glory and splendor.' },
-            '父': { pinyin: 'fù', meaning: 'Father', context: 'Information about his father.' },
-            '明': { pinyin: 'míng', meaning: 'Bright, clear', context: 'Part of father\'s name 明昌 (Mingchang).' },
-            '昌': { pinyin: 'chāng', meaning: 'Prosperous, flourishing', context: 'Part of father\'s name 明昌 (Mingchang).' },
-            '母': { pinyin: 'mǔ', meaning: 'Mother', context: 'Information about his mother.' },
-            '侯': { pinyin: 'hóu', meaning: 'Marquis; surname', context: 'Mother\'s maiden name. 侯氏 = Madam Hou.' },
-            '兄': { pinyin: 'xiōng', meaning: 'Elder brother', context: '兄弟 = brothers.' },
-            '弟': { pinyin: 'dì', meaning: 'Younger brother', context: '兄弟二人 = two brothers.' },
-            '其': { pinyin: 'qí', meaning: 'His, its; he', context: '公其長也 = He was the eldest.' },
-            '長': { pinyin: 'zhǎng', meaning: 'Eldest, senior', context: '其長也 = was the eldest (son).' },
-            '也': { pinyin: 'yě', meaning: 'Also; (sentence particle)', context: 'Classical sentence-ending particle.' },
-            '某': { pinyin: 'mǒu', meaning: 'Certain, some (placeholder)', context: 'Placeholder for specific names.' },
-            '自': { pinyin: 'zì', meaning: 'Self, from', context: '自幼 = from childhood.' },
-            '幼': { pinyin: 'yòu', meaning: 'Young, childhood', context: 'Emphasizes lifelong good character.' },
-            '勤': { pinyin: 'qín', meaning: 'Diligent, industrious', context: '勤奮 = diligent and striving.' },
-            '奮': { pinyin: 'fèn', meaning: 'To strive, exert', context: '勤奮 = diligent and striving.' },
-            '樸': { pinyin: 'pǔ', meaning: 'Simple, plain', context: '樸實 = simple and honest.' },
-            '循': { pinyin: 'xún', meaning: 'To follow, abide by', context: '循規蹈矩 = idiom: follow rules and walk the line.' },
-            '規': { pinyin: 'guī', meaning: 'Rule, regulation', context: '循規蹈矩 = strictly law-abiding.' },
-            '蹈': { pinyin: 'dǎo', meaning: 'To tread, step on', context: '循規蹈矩 = follow rules and walk correctly.' },
-            '矩': { pinyin: 'jǔ', meaning: 'Carpenter\'s square; norm', context: '循規蹈矩 = idiom for being strictly proper.' },
-            '先': { pinyin: 'xiān', meaning: 'First, before', context: '先喪母 = first lost his mother.' },
-            '喪': { pinyin: 'sàng', meaning: 'To lose (through death)', context: '喪母/喪父 = lost mother/father.' },
-            '後': { pinyin: 'hòu', meaning: 'After, later', context: '後喪父 = later lost his father.' },
-            '篤': { pinyin: 'dǔ', meaning: 'Sincere, earnest, devoted', context: '世篤 = devoted for generations (to this place). Also 篤實 = sincere and reliable.' },
-            '實': { pinyin: 'shí', meaning: 'Real, solid, reliable', context: 'A person of substance.' },
-            '端': { pinyin: 'duān', meaning: 'Upright, proper', context: '端方 = upright and proper.' },
-            '方': { pinyin: 'fāng', meaning: 'Square, upright', context: 'Suggests correct principles.' },
-            '里': { pinyin: 'lǐ', meaning: 'Village, neighborhood', context: '鄉里 = village community.' },
-            '稱': { pinyin: 'chēng', meaning: 'To praise, call', context: '稱善 = praised his goodness.' },
-            '善': { pinyin: 'shàn', meaning: 'Good, virtuous', context: '樂善好施 = delights in good and loves giving.' },
-            '候': { pinyin: 'hòu', meaning: 'To wait, observe', context: '候時 = observe the right timing.' },
-            '殖': { pinyin: 'zhí', meaning: 'To grow, amass', context: '殖貨 = accumulate goods/wealth.' },
-            '歲': { pinyin: 'suì', meaning: 'Year', context: '歲有奇贏 = every year had surplus profits.' },
-            '奇': { pinyin: 'jī', meaning: 'Surplus, extra', context: '奇贏 = surplus profits.' },
-            '贏': { pinyin: 'yíng', meaning: 'Profit, gain', context: 'Business success.' },
-            '商': { pinyin: 'shāng', meaning: 'Merchant, commerce', context: '商場 = marketplace, business world.' },
-            '場': { pinyin: 'chǎng', meaning: 'Field, arena', context: '商場 = marketplace.' },
-            '信': { pinyin: 'xìn', meaning: 'Trust, integrity', context: '信義 = integrity and righteousness.' },
-            '義': { pinyin: 'yì', meaning: 'Righteousness, justice', context: 'Praised for 信義 in business.' },
-            '焉': { pinyin: 'yān', meaning: '(Classical particle)', context: 'Sentence-ending particle.' },
-            '奉': { pinyin: 'fèng', meaning: 'To follow, worship', context: '奉耶穌教 = followed Christianity.' },
-            '耶': { pinyin: 'yē', meaning: '(Phonetic)', context: '耶穌 = Jesus (phonetic transcription).' },
-            '穌': { pinyin: 'sū', meaning: '(Phonetic)', context: '耶穌 = Jesus.' },
-            '愛': { pinyin: 'ài', meaning: 'Love', context: '愛人如己 = love others as oneself.' },
-            '老': { pinyin: 'lǎo', meaning: 'Old, aged', context: '老而 = in old age...' },
-            '業': { pinyin: 'yè', meaning: 'Occupation, business', context: 'Introduces his occupation.' },
-            '駕': { pinyin: 'jià', meaning: 'To drive, pilot, sail', context: '駕釣船 = piloted a fishing boat.' },
-            '釣': { pinyin: 'diào', meaning: 'To fish', context: 'Fishing - his original occupation.' },
-            '船': { pinyin: 'chuán', meaning: 'Boat, ship', context: 'Fishing boat.' },
-            '捕': { pinyin: 'bǔ', meaning: 'To catch', context: 'Catching fish.' },
-            '旋': { pinyin: 'xuán', meaning: 'Soon, subsequently', context: '旋經理 = soon after, he managed...' },
-            '煤': { pinyin: 'méi', meaning: 'Coal', context: '煤號 = coal merchant business.' },
-            '號': { pinyin: 'hào', meaning: 'Shop, business, firm', context: '煤號 = coal merchant shop.' },
-            '終': { pinyin: 'zhōng', meaning: 'End, final', context: '終身 = all one\'s life.' },
-            '身': { pinyin: 'shēn', meaning: 'Body, life', context: '終身 = lifelong, all one\'s life.' },
-            '是': { pinyin: 'shì', meaning: 'This, is', context: '自是 = from then on.' },
-            '魚': { pinyin: 'yú', meaning: 'Fish', context: 'His livelihood.' },
-            '江': { pinyin: 'jiāng', meaning: 'River; Jiangsu', context: '江浙 = Jiangsu-Zhejiang region.' },
-            '浙': { pinyin: 'zhè', meaning: 'Zhejiang', context: 'Coastal province.' },
-            '海': { pinyin: 'hǎi', meaning: 'Sea, ocean', context: 'Part of 上海 (Shanghai).' },
-            '中': { pinyin: 'zhōng', meaning: 'Middle, in', context: '海中 = in the sea.' },
-            '年': { pinyin: 'nián', meaning: 'Year', context: 'Used in dates and ages.' },
-            '三': { pinyin: 'sān', meaning: 'Three', context: 'Number.' },
-            '即': { pinyin: 'jí', meaning: 'Immediately, then', context: '年十三即 = at age 13 he immediately...' },
-            '十': { pinyin: 'shí', meaning: 'Ten', context: '三十 = thirty.' },
-            '始': { pinyin: 'shǐ', meaning: 'To begin, start', context: 'At age 30 he began...' },
-            '客': { pinyin: 'kè', meaning: 'Guest, sojourner', context: 'Migrant living away from home.' },
-            '上': { pinyin: 'shàng', meaning: 'Up, above', context: 'Part of 上海 (Shanghai).' },
-            '營': { pinyin: 'yíng', meaning: 'To operate, manage', context: 'Managing a business.' },
-            '衣': { pinyin: 'yī', meaning: 'Clothing', context: '衣業 = clothing trade.' },
-            '施': { pinyin: 'shī', meaning: 'To implement; to give', context: '施經理 = managed skillfully; 好施 = loves to give.' },
-            '經': { pinyin: 'jīng', meaning: 'To manage; classics', context: '經理 = to manage.' },
-            '理': { pinyin: 'lǐ', meaning: 'To manage, principle', context: 'Business administration.' },
-            '獲': { pinyin: 'huò', meaning: 'To obtain, harvest', context: '獲利 = obtain profit.' },
-            '利': { pinyin: 'lì', meaning: 'Profit, benefit', context: 'Business success.' },
-            '有': { pinyin: 'yǒu', meaning: 'To have', context: 'Common verb.' },
-            '成': { pinyin: 'chéng', meaning: 'To accomplish', context: '有成 = achieved success.' },
-            '樂': { pinyin: 'lè', meaning: 'To delight in; happy', context: '樂善 = delights in good.' },
-            '好': { pinyin: 'hào', meaning: 'To love, be fond of', context: '好施 = loves to give.' },
-            '濟': { pinyin: 'jì', meaning: 'To aid, help', context: '濟人 = help others.' },
-            '如': { pinyin: 'rú', meaning: 'Like, as if', context: '如己 = as if oneself.' },
-            '己': { pinyin: 'jǐ', meaning: 'Self, oneself', context: 'The Golden Rule.' },
-            '黨': { pinyin: 'dǎng', meaning: 'Group, neighborhood', context: '鄉黨 = community.' },
-            '之': { pinyin: 'zhī', meaning: 'Of; him, it', context: 'Classical particle.' },
-            '配': { pinyin: 'pèi', meaning: 'Spouse, to marry', context: '配陳氏 = married Madam Chen.' },
-            '陳': { pinyin: 'chén', meaning: 'Chen (surname)', context: 'Wife\'s surname.' },
-            '子': { pinyin: 'zǐ', meaning: 'Son, child', context: '生子三 = had three sons.' },
-            '女': { pinyin: 'nǚ', meaning: 'Daughter', context: '女四 = four daughters.' },
-            '四': { pinyin: 'sì', meaning: 'Four', context: 'Number.' },
-            '卒': { pinyin: 'zú', meaning: 'To die (honorific)', context: 'Respectful term for death.' },
-            '於': { pinyin: 'yú', meaning: 'In, at', context: 'Preposition.' },
-            '民': { pinyin: 'mín', meaning: 'People, citizen', context: '民國 = Republic of China.' },
-            '國': { pinyin: 'guó', meaning: 'Country, nation', context: '民國四年 = Year 4 of Republic = 1915.' },
-            '乙': { pinyin: 'yǐ', meaning: 'Second Heavenly Stem', context: 'Part of 乙卯 (1915).' },
-            '卯': { pinyin: 'mǎo', meaning: 'Fourth Earthly Branch', context: '乙卯 = 1915 in sexagenary cycle.' },
-            '九': { pinyin: 'jiǔ', meaning: 'Nine', context: '九月 = 9th month.' },
-            '月': { pinyin: 'yuè', meaning: 'Month', context: 'Used in dates.' },
-            '二': { pinyin: 'èr', meaning: 'Two', context: 'Number.' },
-            '七': { pinyin: 'qī', meaning: 'Seven', context: '二十七 = 27.' },
-            '日': { pinyin: 'rì', meaning: 'Day, sun', context: 'Used in dates.' },
-            '享': { pinyin: 'xiǎng', meaning: 'To enjoy, receive', context: '享年 = lived to age of.' },
-            '六': { pinyin: 'liù', meaning: 'Six', context: '六十 = sixty.' },
-            '葬': { pinyin: 'zàng', meaning: 'To bury', context: 'Burial.' },
-            '山': { pinyin: 'shān', meaning: 'Mountain', context: 'Burial location.' },
-            '坐': { pinyin: 'zuò', meaning: 'To sit; orientation', context: 'Grave orientation (fengshui).' },
-            '向': { pinyin: 'xiàng', meaning: 'To face, direction', context: 'Direction grave faces.' },
-            '譜': { pinyin: 'pǔ', meaning: 'Genealogy, register', context: '宗譜 = clan genealogy.' },
-            '宗': { pinyin: 'zōng', meaning: 'Ancestor, clan', context: 'Ancestral lineage.' },
-            '卷': { pinyin: 'juàn', meaning: 'Volume, scroll', context: '卷六 = Volume 6.' },
-            '正': { pinyin: 'zhèng', meaning: 'Correct, main', context: 'Part of hall name.' },
-            '堂': { pinyin: 'táng', meaning: 'Hall', context: '正始堂 = Zhengshi Hall (publisher).' },
+        // ========== DOCUMENT DATA STRUCTURE ==========
+        // Organized hierarchically: Sections > Phrases > Characters
+
+        const sections = {
+            spine: {
+                name: 'Book Spine',
+                chinese: '書脊',
+                description: 'The outer cover of the genealogy volume, displaying the clan name, volume number, document type, and publishing hall name. These elements identify the source and context of the burial record within the larger genealogical compilation.'
+            },
+            title: {
+                name: 'Document Title',
+                chinese: '標題',
+                description: 'The formal title of this burial record (壙志). A 壙志 is an epitaph or biographical inscription traditionally placed in or near the tomb, recording the deceased\'s life for posterity.'
+            },
+            ancestry: {
+                name: 'Name & Origins',
+                chinese: '姓名籍貫',
+                description: 'This section establishes the subject\'s identity: his personal name (名), courtesy name (字), surname (姓), and ancestral home. In Chinese tradition, recording one\'s geographic origins connects the individual to their lineage and community.'
+            },
+            family_background: {
+                name: 'Ancestors & Parents',
+                chinese: '先世父母',
+                description: 'A listing of the subject\'s immediate ancestors: great-grandfather, grandfather, and father, along with his mother\'s maiden name and information about siblings. This establishes his place in the family lineage.'
+            },
+            character: {
+                name: 'Character & Virtues',
+                chinese: '品德',
+                description: 'This section praises the subject\'s moral character and virtuous deeds. It describes his lifelong qualities, religious faith (Christianity), and generous philanthropic contributions to community institutions in both Shanghai and his hometown.'
+            },
+            occupation: {
+                name: 'Occupation & Career',
+                chinese: '職業經歷',
+                description: 'A chronicle of the subject\'s working life: from early work in local shops, to fishing along the Jiangsu-Zhejiang coast, to his move to Shanghai at age 30 where he found success in the clothing trade and coal business.'
+            },
+            family: {
+                name: 'Marriage & Children',
+                chinese: '婚姻子女',
+                description: 'Records of the subject\'s wives and descendants. He had two wives (the first predeceased him) and multiple children and grandchildren, whose names are listed to document the continuation of the family line.'
+            },
+            death: {
+                name: 'Birth & Death',
+                chinese: '生卒',
+                description: 'The subject\'s birth and death dates, given in both the traditional Chinese calendar (using reign periods and the sexagenary cycle) and by age. This section also notes when he commissioned his burial site.'
+            },
+            burial: {
+                name: 'Burial Site & Geomancy',
+                chinese: '葬地風水',
+                description: 'Description of the tomb\'s location at Phoenix Mountain (天鳳山) and its favorable feng shui qualities. The poetic language describes the landscape as resembling a phoenix in flight, an extremely auspicious configuration that will bless his descendants.'
+            },
+            credit: {
+                name: 'Attribution',
+                chinese: '署名',
+                description: 'Credits for the document\'s composition. Zhang Meiyi (張美翊, 1856-1924) was a prominent Ningbo scholar who wrote the text. "書丹" credits the calligrapher who wrote the characters in red ink for carving.'
+            }
         };
 
-        // Document text - columns from RIGHT to LEFT as in original
-        // Each column has x offset (from right edge, in px) and y offset (from top, in px)
-        const documentText = [
-            { type: 'title', section: 'title', chars: '鮑公恆齋生壙志', x: -20, y: 7, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'ancestry', chars: '公名哲泰字恆齋姓鮑氏', x: -79, y: 8, size: 16, spacing: 1.13 },
-            { type: 'text', section: 'ancestry', chars: '世篤鄞南鄞塘鄉鮑家埭人', x: -54, y: 200, size: 16, spacing: 1.14 }, // continues in same column as previous
-            { type: 'text', section: 'family_background', chars: '曾祖廷揚祖光華父', x: -27, y: 412, size: 16, spacing: 1.14 }, // finishes first column
-            { type: 'text', section: 'family_background', chars: '明昌母侯氏兄弟二人公其長也', x: -30, y: 8, size: 16, spacing: 1.14 }, // starts column 2
-            { type: 'text', section: 'character', chars: '自幼勤奮樸實循規蹈矩先喪母後喪父', x: -4, y: 258, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'occupation', chars: '年十三即棄書而賈就業於鄉之京蘇雜貨肆兼售首飾緞匹既不得志則', x: -7, y: 9, size: 16, spacing: 1.14 }, // starts column 3
-            { type: 'text', section: 'occupation', chars: '駕釣船捕魚江浙海中年三十始客上海營衣業旋經理煤號自是終身一', x: -10, y: 8, size: 16, spacing: 1.14 }, // starts column 4
-            { type: 'text', section: 'character', chars: '業候時殖貨歲有奇贏商場稱信義焉奉耶穌教愛人如己樂善好施老而', x: -14, y: 7, size: 16, spacing: 1.14 }, // starts column 5
-            { type: 'text', section: 'character', chars: '不倦在滬如寧波同鄉會四明公所四明醫院青年會等皆竭誠資助在鄉', x: -18, y: 10, size: 16, spacing: 1.14 }, // starts column 6
-            { type: 'text', section: 'character', chars: '興辦學校修葺宗祠雖數千金不少吝蓋古鄉里之善人今宗教之信徒也', x: -22, y: 8, size: 16, spacing: 1.14 }, // starts column 7
-            { type: 'text', section: 'family', chars: '無愧焉元配陳氏前卒繼配崔氏子三長咸鈞陳出先逝次咸鏘三咸龢皆', x: -26, y: 9, size: 16, spacing: 1.14 }, // starts column 8
-            { type: 'text', section: 'family', chars: '崔出女四人適余頌威陸鳳石三四待字孫四人正鵠正鵬正鴻正鶴公生', x: -29, y: 9, size: 16, spacing: 1.14 }, // starts column 9
-            { type: 'text', section: 'death', chars: '於前清同治四年乙丑九月二十七日歲甲子年正六十一月營生壙於天', x: -34, y: 10, size: 16, spacing: 1.14 }, // starts column 10
-            // Credit/signature block (right side)
-            { type: 'credit', section: 'credit', chars: '同邑張美翊撰文', x: 324, y: 357, size: 16, spacing: 1.13 }, // author credit
-            { type: 'credit', section: 'credit', chars: '書丹', x: 321, y: 451, size: 16, spacing: 1.13 }, // calligrapher credit (name cut off)
-            // Cover spine (left side of image - larger font)
-            { type: 'spine', section: 'spine', chars: '句俞鮑氏宗譜', x: 14, y: 5, size: 28, spacing: 0.80 }, // main spine title
-            { type: 'spine', section: 'spine', chars: '卷六', x: 51, y: 167, size: 28, spacing: 0.80 }, // volume number
-            { type: 'spine', section: 'spine', chars: '生壙志', x: 95, y: 245, size: 13, spacing: 1.18 }, // document type label
-            { type: 'spine', section: 'spine', chars: '正始堂', x: 112, y: 499, size: 27, spacing: 0.85 }, // hall name (堂號)
-            // Feng shui burial location (column 11) - after spine to not interfere
-            { type: 'text', section: 'burial', chars: '鳳山麓墓向坐', x: 104, y: 8, size: 16, spacing: 1.14 }, // continues from 天, making 天鳳山
-            { type: 'text', section: 'burial', chars: '向', x: 130, y: 142, size: 16, spacing: 1.13 }, // separate - facing direction
-            { type: 'text', section: 'burial', chars: '兼', x: 158, y: 180, size: 16, spacing: 1.13 }, // separate - combined with
-            { type: 'text', section: 'burial', chars: '山環水抱當蔭其嗣人', x: 182, y: 237, size: 16, spacing: 1.14 }, // feng shui blessing - 蔭 = ancestral protection
-            { type: 'text', section: 'burial', chars: '天鳳之山形勢飛翔華采翼翼和鳴鏘鏘卜吉於此子孫繁昌百歲之後其', x: 179, y: 9, size: 16, spacing: 1.14 }, // phoenix mountain poetry (29 chars)
-            { type: 'text', section: 'burial', chars: '歸其藏', x: 176, y: 10, size: 16, spacing: 1.14 }, // final segment - "return to his resting place"
+        // Phrases organized by section, with translations and scholarly notes
+        const phrases = [
+            // SPINE
+            { section: 'spine', chars: '句俞鮑氏宗譜', translation: 'Bao Clan Genealogy of Gouyu', notes: 'Gouyu (句俞) is an archaic name for the Siming Mountains region near Ningbo and Yuyao. This identifies the genealogy as belonging to the Bao clan of this area. 宗譜 refers to a comprehensive clan genealogical record.' },
+            { section: 'spine', chars: '卷六', translation: 'Volume Six', notes: 'Indicates this burial record is found in the sixth volume of the multi-volume genealogy.' },
+            { section: 'spine', chars: '生壙志', translation: 'Burial Record', notes: '生壙 refers to a tomb prepared during one\'s lifetime. 志 means record or inscription. Together, this indicates a tomb epitaph commissioned before death.' },
+            { section: 'spine', chars: '正始堂', translation: 'Zhengshi Hall', notes: 'The 堂號 (hall name) of the publishing house or family branch. 正始 means "correct beginning" or "orthodox origin," suggesting a commitment to proper tradition.' },
+
+            // TITLE
+            { section: 'title', chars: '鮑公恆齋生壙志', translation: 'Burial Record of Mr. Bao Hengzhai', notes: '公 is an honorific. 恆齋 (Hengzhai, "Persevering Studio") is his courtesy name (字). 生壙志 indicates this epitaph was prepared during his lifetime, a practice allowing the subject to approve the text.' },
+
+            // ANCESTRY
+            { section: 'ancestry', chars: '公名哲泰', translation: 'The gentleman\'s name was Zhetai', notes: '名 refers to the personal name (given name), used only by elders and in formal contexts. 哲 means wise; 泰 means great or peaceful.' },
+            { section: 'ancestry', chars: '字恆齋', translation: 'Courtesy name Hengzhai', notes: 'The 字 (courtesy name) was given at age 20 and used by peers and in social settings. 恆 means constant/persevering; 齋 means studio, common in scholarly names.' },
+            { section: 'ancestry', chars: '姓鮑氏', translation: 'Surname Bao', notes: '姓 introduces the family name. 氏 is added after surnames in formal genealogical contexts to indicate the clan.' },
+            { section: 'ancestry', chars: '世篤鄞南鄞塘鄉鮑家埭人', translation: 'For generations devoted to [this place]; a person of Baojiadai, Nantang Township, southern Yin County', notes: '世篤 suggests generations of sincere devotion to their homeland. 鄞 (Yin County) is now part of Ningbo, Zhejiang. 埭 means embankment, common in place names of this water-rich region.' },
+
+            // FAMILY BACKGROUND
+            { section: 'family_background', chars: '曾祖廷揚', translation: 'Great-grandfather [named] Tingyang', notes: '曾祖 means great-grandfather. Names of ancestors are recorded to establish lineage and honor forebears.' },
+            { section: 'family_background', chars: '祖光華', translation: 'Grandfather [named] Guanghua', notes: '光華 means "glory and splendor," an auspicious name.' },
+            { section: 'family_background', chars: '父明昌', translation: 'Father [named] Mingchang', notes: '明昌 means "bright and prosperous."' },
+            { section: 'family_background', chars: '母侯氏', translation: 'Mother, Madam Hou', notes: 'Women are typically recorded by their maiden surname plus 氏. The Hou family was his mother\'s natal family.' },
+            { section: 'family_background', chars: '兄弟二人', translation: 'Two brothers', notes: 'Indicates he had one sibling (one other brother).' },
+            { section: 'family_background', chars: '公其長也', translation: 'He was the eldest', notes: '長 indicates the senior position among siblings, an important distinction in Chinese family hierarchy.' },
+
+            // CHARACTER
+            { section: 'character', chars: '自幼勤奮樸實', translation: 'From youth, diligent and honest', notes: '勤奮 (diligent and striving) and 樸實 (simple and genuine) are cardinal virtues in Chinese ethics.' },
+            { section: 'character', chars: '循規蹈矩', translation: 'Following rules and walking the proper path', notes: 'A classical idiom (成語) meaning strictly law-abiding and morally upright. Literally: "follow the compass, tread the square."' },
+            { section: 'character', chars: '先喪母後喪父', translation: 'First lost his mother, then lost his father', notes: 'Records the early loss of both parents, which would have required him to observe mourning periods and take on family responsibilities young.' },
+            { section: 'character', chars: '業候時殖貨', translation: 'In business, watched for opportunities to grow wealth', notes: '候時 means observing the right timing; 殖貨 means accumulating goods/wealth through trade.' },
+            { section: 'character', chars: '歲有奇贏', translation: 'Every year had surplus profits', notes: '奇贏 indicates profits beyond expectations, suggesting business acumen.' },
+            { section: 'character', chars: '商場稱信義焉', translation: 'In the marketplace, praised for integrity and righteousness', notes: '信義 (trust and righteousness) was the highest praise for a merchant, indicating honest dealing.' },
+            { section: 'character', chars: '奉耶穌教', translation: 'Followed the teaching of Jesus', notes: 'Indicates he was a Christian. Christianity spread in the Ningbo region through missionary activity in the 19th century.' },
+            { section: 'character', chars: '愛人如己', translation: 'Loved others as himself', notes: 'The Golden Rule from Christian teaching (Matthew 22:39), showing the integration of Christian ethics into his character description.' },
+            { section: 'character', chars: '樂善好施', translation: 'Delighted in goodness and loved giving', notes: 'A classical phrase describing philanthropic character.' },
+            { section: 'character', chars: '老而不倦', translation: 'In old age, untiring', notes: 'His charitable work continued throughout his life.' },
+            { section: 'character', chars: '在滬如寧波同鄉會四明公所四明醫院青年會等皆竭誠資助', translation: 'In Shanghai, sincerely supported the Ningbo Native-Place Association, Siming Gongsuo, Siming Hospital, YMCA, and others', notes: '滬 is short for Shanghai. These were important community organizations for Ningbo merchants in Shanghai. 四明 refers to the Siming Mountains, used as a name for Ningbo region.' },
+            { section: 'character', chars: '在鄉興辦學校修葺宗祠', translation: 'In his hometown, established schools and repaired the ancestral hall', notes: 'Common forms of philanthropy: education and maintaining clan institutions.' },
+            { section: 'character', chars: '雖數千金不少吝', translation: 'Though [costing] thousands of gold, he did not stint', notes: 'Emphasizes the scale of his generosity—thousands in currency was a substantial sum.' },
+            { section: 'character', chars: '蓋古鄉里之善人今宗教之信徒也', translation: 'Truly a virtuous man of the old village tradition, and a religious believer of today', notes: 'A summation linking traditional Confucian virtue with modern Christian faith.' },
+            { section: 'character', chars: '無愧焉', translation: 'Without shame', notes: 'He lived up to both traditional and religious moral standards.' },
+
+            // OCCUPATION
+            { section: 'occupation', chars: '年十三即棄書而賈', translation: 'At age thirteen, abandoned study for trade', notes: 'Left school to enter commerce, not uncommon for families needing income.' },
+            { section: 'occupation', chars: '就業於鄉之京蘇雜貨肆', translation: 'Worked at the village\'s Beijing-Suzhou sundries shop', notes: '京蘇雜貨 refers to goods from the Beijing-Suzhou trade route, suggesting a general store.' },
+            { section: 'occupation', chars: '兼售首飾緞匹', translation: 'Also sold jewelry and silk fabrics', notes: 'Higher-value goods indicating an established business.' },
+            { section: 'occupation', chars: '既不得志', translation: 'Not finding success there', notes: 'His early retail career was not fulfilling or profitable.' },
+            { section: 'occupation', chars: '則駕釣船捕魚江浙海中', translation: 'He piloted a fishing boat, catching fish in the Jiangsu-Zhejiang seas', notes: 'Turned to fishing along the coast, a common livelihood in this maritime region.' },
+            { section: 'occupation', chars: '年三十始客上海', translation: 'At age thirty, began sojourning in Shanghai', notes: '客 indicates living away from one\'s hometown. Shanghai was booming in the late 19th century.' },
+            { section: 'occupation', chars: '營衣業', translation: 'Operated a clothing business', notes: 'Entered the garment trade in Shanghai.' },
+            { section: 'occupation', chars: '旋經理煤號', translation: 'Soon managed a coal firm', notes: 'Coal was an important commodity in industrializing Shanghai.' },
+            { section: 'occupation', chars: '自是終身一業', translation: 'From then on, this was his lifelong occupation', notes: 'Found his career in the coal trade.' },
+
+            // FAMILY
+            { section: 'family', chars: '元配陳氏前卒', translation: 'First wife, Madam Chen, predeceased him', notes: '元配 means first/original wife. She died before him.' },
+            { section: 'family', chars: '繼配崔氏', translation: 'Second wife, Madam Cui', notes: '繼配 means second wife, married after the first wife\'s death.' },
+            { section: 'family', chars: '子三', translation: 'Three sons', notes: 'Male heirs were especially important for continuing the family line.' },
+            { section: 'family', chars: '長咸鈞陳出先逝', translation: 'Eldest Xianjun, by Chen, predeceased [his father]', notes: 'The firstborn son (by the first wife) died before his father.' },
+            { section: 'family', chars: '次咸鏘三咸龢皆崔出', translation: 'Second Xianqiang, third Xianhe, both by Cui', notes: 'The two younger sons were from the second wife.' },
+            { section: 'family', chars: '女四人', translation: 'Four daughters', notes: 'Daughters are listed but typically with less detail than sons.' },
+            { section: 'family', chars: '適余頌威陸鳳石', translation: 'Married to Yu Songwei, Lu Fengshi', notes: '適 means married (for women). Two daughters\' husbands are named.' },
+            { section: 'family', chars: '三四待字', translation: 'Third and fourth awaiting marriage', notes: '待字 means not yet married (literally "awaiting a courtesy name," as women received one upon marriage).' },
+            { section: 'family', chars: '孫四人正鵠正鵬正鴻正鶴', translation: 'Four grandsons: Zhenghu, Zhengpeng, Zhenghong, Zhenghe', notes: 'All grandsons share the generation name 正, indicating the same generational cohort. The second characters are all birds (target/swan, roc, swan, crane), suggesting high aspirations.' },
+            { section: 'family', chars: '公生於前清同治四年乙丑九月二十七日', translation: 'The gentleman was born on the 27th day of the 9th month, in the yichou year, the 4th year of Tongzhi of the former Qing', notes: 'Tongzhi 4 (1865). The sexagenary cycle (乙丑) confirms the year. "前清" (former Qing) indicates this was written after the 1911 revolution.' },
+
+            // DEATH
+            { section: 'death', chars: '歲甲子年正六十一', translation: 'In a jiazi year, exactly sixty-one years old', notes: 'He died at age 61 in a jiazi year (1924 would be the next jiazi after 1865, giving age 59-60, so likely approximate).' },
+            { section: 'death', chars: '月營生壙於天', translation: '[In that] month, prepared his burial site at Tian[feng Mountain]', notes: 'He commissioned his own tomb site while still alive, a respectable practice allowing one to choose an auspicious location.' },
+
+            // BURIAL
+            { section: 'burial', chars: '鳳山麓', translation: 'At the foot of Phoenix Mountain', notes: '鳳山 (Phoenix Mountain) is an auspicious name. 麓 means the foot or base of a mountain.' },
+            { section: 'burial', chars: '墓向坐', translation: 'The tomb sits [facing...]', notes: 'Introduces the feng shui orientation of the tomb.' },
+            { section: 'burial', chars: '向', translation: 'Facing direction', notes: 'In feng shui, 向 indicates the direction the front of the tomb faces.' },
+            { section: 'burial', chars: '兼', translation: 'Combined with', notes: 'Indicates a compound compass direction with slight deviation from the primary bearing.' },
+            { section: 'burial', chars: '山環水抱', translation: 'Mountains encircle, water embraces', notes: 'The ideal feng shui configuration: protective mountains behind and to the sides, water features in front. This creates a "bright hall" (明堂) that gathers beneficial qi.' },
+            { section: 'burial', chars: '當蔭其嗣人', translation: 'Shall bless and shelter his descendants', notes: '蔭 means to shade/shelter, metaphorically meaning ancestral blessing extending to future generations. Good tomb feng shui was believed to benefit descendants.' },
+            { section: 'burial', chars: '天鳳之山形勢飛翔', translation: 'The topography of Tianfeng Mountain resembles [a phoenix] soaring in flight', notes: 'The mountain\'s shape is likened to a flying phoenix, one of the most auspicious forms in feng shui landscape analysis (形勢).' },
+            { section: 'burial', chars: '華采翼翼', translation: 'With splendid plumage flapping', notes: '華采 means brilliant colors/plumage. 翼翼 (reduplicated) emphasizes the continuous motion of wings.' },
+            { section: 'burial', chars: '和鳴鏘鏘', translation: 'Singing in harmony, with a resounding ring', notes: '和鳴 means harmonious calls. 鏘鏘 is onomatopoeia for the melodious, bell-like cry of the phoenix.' },
+            { section: 'burial', chars: '卜吉於此', translation: 'Divined this spot as auspicious', notes: '卜 means to divine. A geomancer would have selected this site through feng shui analysis.' },
+            { section: 'burial', chars: '子孫繁昌', translation: 'Descendants will flourish and prosper', notes: 'The promised benefit of the auspicious burial site.' },
+            { section: 'burial', chars: '百歲之後其', translation: 'After a hundred years, he...', notes: '百歲之後 is a euphemism for "after death." The phrase continues in the next column.' },
+            { section: 'burial', chars: '歸其藏', translation: '...shall return to his resting place', notes: '歸 means to return. 藏 here means burial place or hidden/stored. The complete phrase promises peaceful eternal rest.' },
+
+            // CREDIT
+            { section: 'credit', chars: '同邑張美翊撰文', translation: 'Text composed by Zhang Meiyi of the same district', notes: '同邑 means from the same district. Zhang Meiyi (張美翊, 1856-1924) was a distinguished Ningbo scholar, calligrapher, and seal carver who wrote many epitaphs and genealogical texts.' },
+            { section: 'credit', chars: '書丹', translation: 'Written in cinnabar', notes: '書丹 is a traditional credit for the calligrapher who wrote the characters in red ink (丹 = cinnabar) to be carved into stone. The calligrapher\'s name may have been on a portion not shown.' }
         ];
 
-        const sectionInfo = {
-            credit: { name: 'Attribution', chinese: '署名' },
-            spine: { name: 'Book Spine', chinese: '書脊' },
-            title: { name: 'Title', chinese: '生境志標題' },
-            ancestry: { name: 'Name & Origins', chinese: '姓名籍貫' },
-            family_background: { name: 'Ancestors & Parents', chinese: '先世父母' },
-            character: { name: 'Character & Virtues', chinese: '品德' },
-            occupation: { name: 'Occupation & Career', chinese: '職業經歷' },
-            family: { name: 'Marriage & Children', chinese: '婚姻子女' },
-            death: { name: 'Death', chinese: '卒' },
-            burial: { name: 'Burial & Fengshui', chinese: '葬地風水' },
-            marker: { name: 'Source Reference', chinese: '出處' }
+        // Character dictionary with detailed information
+        const characterData = {
+            // Spine
+            '句': { pinyin: 'gōu', meaning: 'Phrase; (place name component)', context: 'Part of Gouyu (句俞), an ancient name for the Siming Mountains region.' },
+            '俞': { pinyin: 'yú', meaning: 'Surname; to consent', context: 'Part of Gouyu (句俞), the geographic name for this clan\'s homeland.' },
+            '宗': { pinyin: 'zōng', meaning: 'Clan, ancestors, lineage', context: 'In 宗譜 (clan genealogy), refers to the patrilineal descent group.' },
+            '譜': { pinyin: 'pǔ', meaning: 'Register, record, genealogy', context: '宗譜 is a comprehensive record of a clan\'s history, members, and traditions.' },
+            '卷': { pinyin: 'juàn', meaning: 'Volume, scroll, chapter', context: 'Genealogies were often compiled in multiple volumes.' },
+            '六': { pinyin: 'liù', meaning: 'Six', context: 'Volume number of this section.' },
+            '正': { pinyin: 'zhèng', meaning: 'Correct, orthodox, upright', context: 'In 正始堂, suggests orthodox tradition or correct beginning.' },
+            '始': { pinyin: 'shǐ', meaning: 'Beginning, start, origin', context: 'Part of the hall name 正始堂 (Hall of Orthodox Beginning).' },
+            '堂': { pinyin: 'táng', meaning: 'Hall, main room', context: '堂號 (hall name) distinguishes family branches and publishers.' },
+
+            // Title
+            '鮑': { pinyin: 'bào', meaning: 'Surname Bao; salted fish', context: 'The family surname. The Bao clan was prominent in the Ningbo region.' },
+            '公': { pinyin: 'gōng', meaning: 'Honorific: lord, sir, gentleman', context: 'Respectful title for the deceased subject of this record.' },
+            '恆': { pinyin: 'héng', meaning: 'Constant, persevering, eternal', context: 'Part of courtesy name 恆齋, suggesting steadfast character.' },
+            '齋': { pinyin: 'zhāi', meaning: 'Studio, study room', context: 'Common in scholars\' names, suggesting literary cultivation.' },
+            '生': { pinyin: 'shēng', meaning: 'Life, to be born, living', context: 'In 生壙, indicates tomb prepared during lifetime.' },
+            '壙': { pinyin: 'kuàng', meaning: 'Tomb, burial pit', context: '壙志 is a tomb inscription, a biography placed with the deceased.' },
+            '志': { pinyin: 'zhì', meaning: 'Record, annals, to chronicle', context: '壙志 = burial record, epitaph.' },
+
+            // Ancestry
+            '名': { pinyin: 'míng', meaning: 'Name, personal name', context: 'The 名 (given name) was used by elders; courtesy name by peers.' },
+            '哲': { pinyin: 'zhé', meaning: 'Wise, sagacious, philosophical', context: 'Part of his personal name Zhetai (哲泰).' },
+            '泰': { pinyin: 'tài', meaning: 'Great, peaceful, safe', context: 'Part of personal name, suggesting grandeur and peace.' },
+            '字': { pinyin: 'zì', meaning: 'Courtesy name, style name', context: 'Given at age 20, used in social and professional contexts.' },
+            '姓': { pinyin: 'xìng', meaning: 'Surname, family name', context: 'Introduces the patrilineal family name.' },
+            '氏': { pinyin: 'shì', meaning: 'Clan, family suffix', context: 'Added after surnames in formal genealogical writing.' },
+            '世': { pinyin: 'shì', meaning: 'Generation, era, world', context: '世篤 suggests generational devotion to their home.' },
+            '篤': { pinyin: 'dǔ', meaning: 'Sincere, devoted, earnest', context: 'Describes generations of sincere attachment to their homeland.' },
+            '鄞': { pinyin: 'yín', meaning: 'Yin County (place name)', context: 'Ancient county, now part of Ningbo, Zhejiang Province.' },
+            '南': { pinyin: 'nán', meaning: 'South', context: '鄞南 = southern Yin County, specifying the exact region.' },
+            '塘': { pinyin: 'táng', meaning: 'Pond, embankment, pool', context: 'Part of Nantang Township (南塘鄉).' },
+            '鄉': { pinyin: 'xiāng', meaning: 'Township, village, rural area', context: 'Administrative unit below the county level.' },
+            '家': { pinyin: 'jiā', meaning: 'Family, home, house', context: 'Part of village name Baojiadai (鮑家埭).' },
+            '埭': { pinyin: 'dài', meaning: 'Dam, embankment, weir', context: 'Common in place names in water-rich Jiangnan region.' },
+            '人': { pinyin: 'rén', meaning: 'Person, people', context: 'X人 means "a person from X place."' },
+
+            // Family background
+            '曾': { pinyin: 'zēng', meaning: 'Great (generational prefix)', context: '曾祖 = great-grandfather (two generations back).' },
+            '祖': { pinyin: 'zǔ', meaning: 'Grandfather, ancestor', context: 'Used for male ancestors.' },
+            '廷': { pinyin: 'tíng', meaning: 'Court, hall, government', context: 'Part of great-grandfather\'s name 廷揚.' },
+            '揚': { pinyin: 'yáng', meaning: 'To raise, spread, praise', context: 'Part of great-grandfather\'s name.' },
+            '光': { pinyin: 'guāng', meaning: 'Light, glory, honor', context: 'Part of grandfather\'s name 光華.' },
+            '華': { pinyin: 'huá', meaning: 'Splendid, magnificent, China', context: '光華 = glory and splendor.' },
+            '父': { pinyin: 'fù', meaning: 'Father', context: 'Introduces father\'s name.' },
+            '明': { pinyin: 'míng', meaning: 'Bright, clear, Ming dynasty', context: 'Part of father\'s name 明昌.' },
+            '昌': { pinyin: 'chāng', meaning: 'Prosperous, flourishing', context: '明昌 = bright and prosperous.' },
+            '母': { pinyin: 'mǔ', meaning: 'Mother', context: 'Introduces mother\'s maiden family.' },
+            '侯': { pinyin: 'hóu', meaning: 'Marquis; surname Hou', context: 'Mother\'s maiden surname.' },
+            '兄': { pinyin: 'xiōng', meaning: 'Elder brother', context: '兄弟 = brothers.' },
+            '弟': { pinyin: 'dì', meaning: 'Younger brother', context: 'Part of 兄弟 (brothers).' },
+            '二': { pinyin: 'èr', meaning: 'Two', context: 'Two brothers in total.' },
+            '其': { pinyin: 'qí', meaning: 'His, its, that, he', context: 'Pronoun referring to the subject.' },
+            '長': { pinyin: 'zhǎng', meaning: 'Eldest, senior, to grow', context: '其長也 = he was the eldest.' },
+            '也': { pinyin: 'yě', meaning: '(Classical sentence particle)', context: 'Marks end of declarative sentence in classical Chinese.' },
+
+            // Character & virtues
+            '自': { pinyin: 'zì', meaning: 'Self, from, since', context: '自幼 = from childhood.' },
+            '幼': { pinyin: 'yòu', meaning: 'Young, childhood', context: 'Emphasizes lifelong good character.' },
+            '勤': { pinyin: 'qín', meaning: 'Diligent, industrious', context: '勤奮 = hardworking and striving.' },
+            '奮': { pinyin: 'fèn', meaning: 'To strive, exert oneself', context: 'Part of 勤奮 (diligent effort).' },
+            '樸': { pinyin: 'pǔ', meaning: 'Simple, plain, unadorned', context: '樸實 = simple and genuine.' },
+            '實': { pinyin: 'shí', meaning: 'Real, solid, honest', context: 'A person of substance and sincerity.' },
+            '循': { pinyin: 'xún', meaning: 'To follow, comply with', context: '循規蹈矩 = follow rules strictly.' },
+            '規': { pinyin: 'guī', meaning: 'Rule, compass (tool)', context: 'Part of idiom about moral uprightness.' },
+            '蹈': { pinyin: 'dǎo', meaning: 'To tread, step on', context: '蹈矩 = walk the proper path.' },
+            '矩': { pinyin: 'jǔ', meaning: 'Carpenter\'s square, norm', context: 'Metaphor for proper standards.' },
+            '先': { pinyin: 'xiān', meaning: 'First, before, earlier', context: '先喪母 = first lost mother.' },
+            '喪': { pinyin: 'sàng', meaning: 'To lose (through death), mourning', context: 'Used for death of close relatives.' },
+            '後': { pinyin: 'hòu', meaning: 'After, later, behind', context: '後喪父 = later lost father.' },
+            '業': { pinyin: 'yè', meaning: 'Business, occupation, karma', context: 'His trade and livelihood.' },
+            '候': { pinyin: 'hòu', meaning: 'To wait, observe, season', context: '候時 = watch for opportunities.' },
+            '時': { pinyin: 'shí', meaning: 'Time, season, opportunity', context: 'Right timing in business.' },
+            '殖': { pinyin: 'zhí', meaning: 'To breed, grow, multiply', context: '殖貨 = grow wealth through trade.' },
+            '貨': { pinyin: 'huò', meaning: 'Goods, commodities', context: 'Commercial merchandise.' },
+            '歲': { pinyin: 'suì', meaning: 'Year, age', context: '歲有奇贏 = each year had surplus.' },
+            '有': { pinyin: 'yǒu', meaning: 'To have, there is', context: 'Common verb of possession.' },
+            '奇': { pinyin: 'jī/qí', meaning: 'Surplus, odd; strange', context: 'Here means surplus, extra.' },
+            '贏': { pinyin: 'yíng', meaning: 'To win, profit, surplus', context: 'Business profits.' },
+            '商': { pinyin: 'shāng', meaning: 'Commerce, merchant', context: '商場 = marketplace, business world.' },
+            '場': { pinyin: 'chǎng', meaning: 'Field, venue, market', context: 'Place of commerce.' },
+            '稱': { pinyin: 'chēng', meaning: 'To praise, call, weigh', context: '稱信義 = praised for integrity.' },
+            '信': { pinyin: 'xìn', meaning: 'Trust, faith, letter', context: '信義 = trustworthiness and righteousness.' },
+            '義': { pinyin: 'yì', meaning: 'Righteousness, justice, meaning', context: 'Moral principle in dealings.' },
+            '焉': { pinyin: 'yān', meaning: '(Classical particle)', context: 'Sentence-ending particle.' },
+            '奉': { pinyin: 'fèng', meaning: 'To receive, follow, serve', context: '奉耶穌教 = followed Christianity.' },
+            '耶': { pinyin: 'yē', meaning: '(Phonetic transcription)', context: 'Part of 耶穌 (Jesus).' },
+            '穌': { pinyin: 'sū', meaning: '(Phonetic transcription)', context: 'Part of 耶穌 (Jesus).' },
+            '教': { pinyin: 'jiào', meaning: 'Teaching, religion, to teach', context: '耶穌教 = Christianity.' },
+            '愛': { pinyin: 'ài', meaning: 'Love, to love', context: '愛人如己 = love others as yourself.' },
+            '如': { pinyin: 'rú', meaning: 'Like, as, according to', context: 'Comparison particle.' },
+            '己': { pinyin: 'jǐ', meaning: 'Self, oneself', context: 'The Golden Rule.' },
+            '樂': { pinyin: 'lè/yuè', meaning: 'Joy, happiness; music', context: '樂善 = delight in doing good.' },
+            '善': { pinyin: 'shàn', meaning: 'Good, virtuous, kind', context: 'Moral goodness.' },
+            '好': { pinyin: 'hào/hǎo', meaning: 'To love (hào); good (hǎo)', context: '好施 = loves to give.' },
+            '施': { pinyin: 'shī', meaning: 'To give, bestow, implement', context: 'Charitable giving.' },
+            '老': { pinyin: 'lǎo', meaning: 'Old, aged, venerable', context: '老而不倦 = tireless in old age.' },
+            '而': { pinyin: 'ér', meaning: 'And, but, yet', context: 'Classical conjunction.' },
+            '不': { pinyin: 'bù', meaning: 'Not, no', context: 'Negation particle.' },
+            '倦': { pinyin: 'juàn', meaning: 'Tired, weary', context: '不倦 = untiring.' },
+            '在': { pinyin: 'zài', meaning: 'At, in, to exist', context: 'Location preposition.' },
+            '滬': { pinyin: 'hù', meaning: 'Shanghai (abbreviation)', context: '在滬 = in Shanghai.' },
+            '寧': { pinyin: 'níng', meaning: 'Peaceful; Ningbo', context: '寧波 = Ningbo city.' },
+            '波': { pinyin: 'bō', meaning: 'Wave; Ningbo', context: 'Part of Ningbo (寧波).' },
+            '會': { pinyin: 'huì', meaning: 'Association, meeting, can', context: '同鄉會 = native-place association.' },
+            '四': { pinyin: 'sì', meaning: 'Four', context: 'Part of 四明 (Siming, name for Ningbo region).' },
+            '所': { pinyin: 'suǒ', meaning: 'Place, that which', context: '公所 = public office, guild hall.' },
+            '醫': { pinyin: 'yī', meaning: 'Medicine, doctor', context: '醫院 = hospital.' },
+            '院': { pinyin: 'yuàn', meaning: 'Courtyard, institution', context: 'Part of 醫院 (hospital).' },
+            '青': { pinyin: 'qīng', meaning: 'Green, blue, young', context: '青年會 = YMCA.' },
+            '年': { pinyin: 'nián', meaning: 'Year, age', context: 'Part of 青年 (youth).' },
+            '等': { pinyin: 'děng', meaning: 'Etc., class, equal', context: 'And so forth.' },
+            '皆': { pinyin: 'jiē', meaning: 'All, everyone', context: '皆竭誠資助 = all sincerely supported.' },
+            '竭': { pinyin: 'jié', meaning: 'To exhaust, use up', context: '竭誠 = with utmost sincerity.' },
+            '誠': { pinyin: 'chéng', meaning: 'Sincere, honest', context: 'Sincerity in giving.' },
+            '資': { pinyin: 'zī', meaning: 'Resources, to fund', context: '資助 = to financially support.' },
+            '助': { pinyin: 'zhù', meaning: 'To help, assist', context: 'Aid and support.' },
+            '興': { pinyin: 'xīng', meaning: 'To rise, prosper, start', context: '興辦 = to establish, start.' },
+            '辦': { pinyin: 'bàn', meaning: 'To do, manage, handle', context: '興辦學校 = established schools.' },
+            '學': { pinyin: 'xué', meaning: 'To study, learning', context: '學校 = school.' },
+            '校': { pinyin: 'xiào', meaning: 'School, to proofread', context: 'Educational institution.' },
+            '修': { pinyin: 'xiū', meaning: 'To repair, cultivate', context: '修葺 = repair, renovate.' },
+            '葺': { pinyin: 'qì', meaning: 'To thatch, repair', context: 'Repair of buildings.' },
+            '祠': { pinyin: 'cí', meaning: 'Ancestral temple', context: '宗祠 = clan ancestral hall.' },
+            '雖': { pinyin: 'suī', meaning: 'Although, even if', context: 'Concessive conjunction.' },
+            '數': { pinyin: 'shù', meaning: 'Number, several', context: '數千金 = several thousand in gold.' },
+            '千': { pinyin: 'qiān', meaning: 'Thousand', context: 'Large sum of money.' },
+            '金': { pinyin: 'jīn', meaning: 'Gold, metal, money', context: 'Currency/money.' },
+            '少': { pinyin: 'shǎo', meaning: 'Few, little, young', context: '不少吝 = did not stint.' },
+            '吝': { pinyin: 'lìn', meaning: 'Stingy, grudging', context: 'He was not miserly.' },
+            '蓋': { pinyin: 'gài', meaning: 'To cover; indeed, truly', context: 'Emphatic particle: truly.' },
+            '古': { pinyin: 'gǔ', meaning: 'Ancient, old', context: '古鄉里之善人 = virtuous man of old village tradition.' },
+            '里': { pinyin: 'lǐ', meaning: 'Village, neighborhood', context: '鄉里 = village, community.' },
+            '今': { pinyin: 'jīn', meaning: 'Now, present, today', context: '今宗教之信徒 = modern religious believer.' },
+            '徒': { pinyin: 'tú', meaning: 'Follower, disciple', context: '信徒 = believer, adherent.' },
+            '無': { pinyin: 'wú', meaning: 'Without, not have', context: '無愧 = without shame.' },
+            '愧': { pinyin: 'kuì', meaning: 'Ashamed, guilty', context: 'He lived blamelessly.' },
+
+            // Occupation
+            '十': { pinyin: 'shí', meaning: 'Ten', context: 'Number.' },
+            '三': { pinyin: 'sān', meaning: 'Three', context: '年十三 = age thirteen.' },
+            '即': { pinyin: 'jí', meaning: 'Immediately, then', context: '即棄書 = immediately left studies.' },
+            '棄': { pinyin: 'qì', meaning: 'To abandon, discard', context: 'Left school for work.' },
+            '賈': { pinyin: 'gǔ', meaning: 'Merchant, to trade', context: '而賈 = to become a merchant.' },
+            '就': { pinyin: 'jiù', meaning: 'To go to, undertake', context: '就業 = took up employment.' },
+            '於': { pinyin: 'yú', meaning: 'At, in, to, from', context: 'Classical preposition.' },
+            '京': { pinyin: 'jīng', meaning: 'Capital, Beijing', context: '京蘇 = Beijing-Suzhou (trade goods).' },
+            '蘇': { pinyin: 'sū', meaning: 'Suzhou; to revive', context: 'Part of 京蘇 (regional trade).' },
+            '雜': { pinyin: 'zá', meaning: 'Mixed, miscellaneous', context: '雜貨 = sundries, general goods.' },
+            '肆': { pinyin: 'sì', meaning: 'Shop, store', context: '雜貨肆 = general store.' },
+            '兼': { pinyin: 'jiān', meaning: 'Also, additionally, to combine', context: 'Also sold other goods.' },
+            '售': { pinyin: 'shòu', meaning: 'To sell', context: '兼售 = also sold.' },
+            '首': { pinyin: 'shǒu', meaning: 'Head, first, jewelry', context: '首飾 = jewelry, ornaments.' },
+            '飾': { pinyin: 'shì', meaning: 'Ornament, to decorate', context: 'Part of 首飾.' },
+            '緞': { pinyin: 'duàn', meaning: 'Satin, silk fabric', context: '緞匹 = bolts of silk.' },
+            '匹': { pinyin: 'pǐ', meaning: 'Bolt (of cloth), equal', context: 'Unit for fabric.' },
+            '既': { pinyin: 'jì', meaning: 'Already, since', context: '既不得志 = since he didn\'t succeed.' },
+            '得': { pinyin: 'dé', meaning: 'To get, obtain', context: '不得志 = didn\'t achieve ambitions.' },
+            '則': { pinyin: 'zé', meaning: 'Then, therefore', context: 'Logical connector.' },
+            '駕': { pinyin: 'jià', meaning: 'To drive, pilot, harness', context: '駕釣船 = piloted a fishing boat.' },
+            '釣': { pinyin: 'diào', meaning: 'To fish, angling', context: 'Fishing as livelihood.' },
+            '船': { pinyin: 'chuán', meaning: 'Boat, ship', context: 'Fishing vessel.' },
+            '捕': { pinyin: 'bǔ', meaning: 'To catch, capture', context: '捕魚 = catch fish.' },
+            '魚': { pinyin: 'yú', meaning: 'Fish', context: 'His catch.' },
+            '江': { pinyin: 'jiāng', meaning: 'River; Jiangsu', context: '江浙 = Jiangsu-Zhejiang.' },
+            '浙': { pinyin: 'zhè', meaning: 'Zhejiang province', context: 'Coastal region.' },
+            '海': { pinyin: 'hǎi', meaning: 'Sea, ocean', context: 'Maritime fishing.' },
+            '中': { pinyin: 'zhōng', meaning: 'Middle, in, China', context: '海中 = in the sea.' },
+            '客': { pinyin: 'kè', meaning: 'Guest, sojourner', context: '客上海 = sojourned in Shanghai.' },
+            '上': { pinyin: 'shàng', meaning: 'Up, above, previous', context: '上海 = Shanghai.' },
+            '營': { pinyin: 'yíng', meaning: 'To manage, operate', context: '營衣業 = operated clothing business.' },
+            '衣': { pinyin: 'yī', meaning: 'Clothing, garment', context: 'Garment trade.' },
+            '旋': { pinyin: 'xuán', meaning: 'Soon, to revolve', context: '旋經理 = soon managed.' },
+            '經': { pinyin: 'jīng', meaning: 'To pass through, manage', context: '經理 = to manage.' },
+            '理': { pinyin: 'lǐ', meaning: 'To manage, principle', context: 'Business management.' },
+            '煤': { pinyin: 'méi', meaning: 'Coal', context: '煤號 = coal firm.' },
+            '號': { pinyin: 'hào', meaning: 'Firm, shop, number', context: 'Business establishment.' },
+            '是': { pinyin: 'shì', meaning: 'This, is, correct', context: '自是 = from then on.' },
+            '終': { pinyin: 'zhōng', meaning: 'End, final', context: '終身 = lifelong.' },
+            '身': { pinyin: 'shēn', meaning: 'Body, person, life', context: '終身一業 = one lifelong occupation.' },
+            '一': { pinyin: 'yī', meaning: 'One', context: 'Single occupation.' },
+
+            // Family
+            '元': { pinyin: 'yuán', meaning: 'First, original, dollar', context: '元配 = first/original wife.' },
+            '配': { pinyin: 'pèi', meaning: 'Spouse, to match', context: '元配 = first wife.' },
+            '陳': { pinyin: 'chén', meaning: 'Chen (surname)', context: 'First wife\'s surname.' },
+            '前': { pinyin: 'qián', meaning: 'Before, front, former', context: '前卒 = died earlier.' },
+            '卒': { pinyin: 'zú', meaning: 'To die (honorific), soldier', context: 'Respectful term for death.' },
+            '繼': { pinyin: 'jì', meaning: 'To continue, succeed', context: '繼配 = second wife.' },
+            '崔': { pinyin: 'cuī', meaning: 'Cui (surname)', context: 'Second wife\'s surname.' },
+            '子': { pinyin: 'zǐ', meaning: 'Son, child', context: 'Male offspring.' },
+            '咸': { pinyin: 'xián', meaning: 'All, salty; (name)', context: 'Generation name for sons.' },
+            '鈞': { pinyin: 'jūn', meaning: 'Equal, potter\'s wheel', context: 'Part of eldest son\'s name.' },
+            '出': { pinyin: 'chū', meaning: 'To go out, from', context: '陳出 = born of (Chen).' },
+            '逝': { pinyin: 'shì', meaning: 'To pass away, die', context: '先逝 = died first.' },
+            '次': { pinyin: 'cì', meaning: 'Second, next', context: 'Second son.' },
+            '鏘': { pinyin: 'qiāng', meaning: 'Clang; (name)', context: 'Second son\'s name.' },
+            '龢': { pinyin: 'hé', meaning: 'Harmony (variant)', context: 'Third son\'s name.' },
+            '女': { pinyin: 'nǚ', meaning: 'Daughter, female', context: 'Female offspring.' },
+            '適': { pinyin: 'shì', meaning: 'To marry (for women)', context: '適X = married to X.' },
+            '余': { pinyin: 'yú', meaning: 'Yu (surname); surplus', context: 'Daughter\'s husband\'s surname.' },
+            '頌': { pinyin: 'sòng', meaning: 'To praise, eulogy', context: 'Part of son-in-law\'s name.' },
+            '威': { pinyin: 'wēi', meaning: 'Might, prestige', context: 'Part of son-in-law\'s name.' },
+            '陸': { pinyin: 'lù', meaning: 'Lu (surname); land', context: 'Second son-in-law\'s surname.' },
+            '鳳': { pinyin: 'fèng', meaning: 'Phoenix', context: 'Part of name; also Phoenix Mountain.' },
+            '石': { pinyin: 'shí', meaning: 'Stone, rock', context: 'Part of son-in-law\'s name.' },
+            '待': { pinyin: 'dài', meaning: 'To wait, treat', context: '待字 = awaiting marriage.' },
+            '孫': { pinyin: 'sūn', meaning: 'Grandson, descendant', context: 'Grandchildren.' },
+            '鵠': { pinyin: 'hú', meaning: 'Swan, target', context: 'Grandson\'s name: Zhenghu.' },
+            '鵬': { pinyin: 'péng', meaning: 'Roc (giant bird)', context: 'Grandson\'s name: Zhengpeng.' },
+            '鴻': { pinyin: 'hóng', meaning: 'Swan, great', context: 'Grandson\'s name: Zhenghong.' },
+            '鶴': { pinyin: 'hè', meaning: 'Crane', context: 'Grandson\'s name: Zhenghe.' },
+            '清': { pinyin: 'qīng', meaning: 'Qing dynasty; clear', context: '前清 = former Qing dynasty.' },
+            '同': { pinyin: 'tóng', meaning: 'Same, together', context: '同治 = Tongzhi reign.' },
+            '治': { pinyin: 'zhì', meaning: 'To govern, reign', context: 'Tongzhi Emperor (1861-1875).' },
+            '乙': { pinyin: 'yǐ', meaning: 'Second Heavenly Stem', context: 'Part of sexagenary cycle.' },
+            '丑': { pinyin: 'chǒu', meaning: 'Second Earthly Branch', context: '乙丑 = 1865 or 1925.' },
+            '九': { pinyin: 'jiǔ', meaning: 'Nine', context: '九月 = ninth month.' },
+            '月': { pinyin: 'yuè', meaning: 'Month, moon', context: 'Date component.' },
+            '七': { pinyin: 'qī', meaning: 'Seven', context: '二十七日 = 27th day.' },
+            '日': { pinyin: 'rì', meaning: 'Day, sun', context: 'Date component.' },
+
+            // Death & burial
+            '甲': { pinyin: 'jiǎ', meaning: 'First Heavenly Stem', context: 'Part of sexagenary cycle.' },
+            '百': { pinyin: 'bǎi', meaning: 'Hundred', context: '百歲 = hundred years (euphemism for death).' },
+            '之': { pinyin: 'zhī', meaning: 'Of, \'s, him/it', context: 'Classical possessive/object particle.' },
+
+            // Burial feng shui
+            '天': { pinyin: 'tiān', meaning: 'Heaven, sky, day', context: '天鳳山 = Heavenly Phoenix Mountain.' },
+            '山': { pinyin: 'shān', meaning: 'Mountain', context: 'Burial location.' },
+            '麓': { pinyin: 'lù', meaning: 'Foot of mountain', context: 'Base of the mountain.' },
+            '墓': { pinyin: 'mù', meaning: 'Tomb, grave', context: 'His burial place.' },
+            '向': { pinyin: 'xiàng', meaning: 'To face, direction', context: 'Feng shui orientation.' },
+            '坐': { pinyin: 'zuò', meaning: 'To sit; (feng shui) back direction', context: 'The direction the tomb\'s back faces.' },
+            '環': { pinyin: 'huán', meaning: 'To surround, ring', context: '山環 = mountains encircle.' },
+            '水': { pinyin: 'shuǐ', meaning: 'Water', context: '水抱 = water embraces.' },
+            '抱': { pinyin: 'bào', meaning: 'To embrace, hold', context: 'Water wrapping around the site.' },
+            '當': { pinyin: 'dāng', meaning: 'Should, match, equal to', context: '當蔭 = shall shelter/bless.' },
+            '蔭': { pinyin: 'yìn', meaning: 'Shade, shelter, bless', context: 'Ancestral blessing extending to descendants.' },
+            '嗣': { pinyin: 'sì', meaning: 'Heir, descendant', context: '嗣人 = heirs, posterity.' },
+            '形': { pinyin: 'xíng', meaning: 'Form, shape', context: '形勢 = terrain configuration.' },
+            '勢': { pinyin: 'shì', meaning: 'Force, momentum, terrain', context: 'The mountain\'s dynamic form.' },
+            '飛': { pinyin: 'fēi', meaning: 'To fly', context: '飛翔 = soaring flight.' },
+            '翔': { pinyin: 'xiáng', meaning: 'To soar, glide', context: 'Like a phoenix in flight.' },
+            '采': { pinyin: 'cǎi', meaning: 'Color, plumage', context: '華采 = splendid plumage.' },
+            '翼': { pinyin: 'yì', meaning: 'Wing', context: '翼翼 = flapping wings (reduplicated).' },
+            '和': { pinyin: 'hé', meaning: 'Harmony, and, with', context: '和鳴 = harmonious calls.' },
+            '鳴': { pinyin: 'míng', meaning: 'To call, cry (bird)', context: 'Phoenix\'s song.' },
+            '卜': { pinyin: 'bǔ', meaning: 'To divine, divination', context: '卜吉 = divined as auspicious.' },
+            '吉': { pinyin: 'jí', meaning: 'Auspicious, lucky', context: 'Favorable omen.' },
+            '此': { pinyin: 'cǐ', meaning: 'This, here', context: '於此 = at this place.' },
+            '繁': { pinyin: 'fán', meaning: 'Flourishing, numerous', context: '繁昌 = flourishing and prosperous.' },
+            '歸': { pinyin: 'guī', meaning: 'To return, belong', context: '歸其藏 = return to his resting place.' },
+            '藏': { pinyin: 'cáng/zàng', meaning: 'To hide, store; burial place', context: 'His final resting place.' },
+
+            // Credit
+            '邑': { pinyin: 'yì', meaning: 'District, town', context: '同邑 = from same district.' },
+            '張': { pinyin: 'zhāng', meaning: 'Zhang (surname)', context: 'Author\'s surname.' },
+            '美': { pinyin: 'měi', meaning: 'Beautiful, fine', context: 'Part of author\'s name.' },
+            '翊': { pinyin: 'yì', meaning: 'To assist; wings', context: 'Part of author\'s name.' },
+            '撰': { pinyin: 'zhuàn', meaning: 'To compose, write', context: '撰文 = composed the text.' },
+            '文': { pinyin: 'wén', meaning: 'Text, writing, literature', context: 'The written composition.' },
+            '書': { pinyin: 'shū', meaning: 'To write; book', context: '書丹 = wrote in cinnabar.' },
+            '丹': { pinyin: 'dān', meaning: 'Cinnabar, red', context: 'Red ink used for stone inscription templates.' }
         };
+
+        // Layout data - position of each text segment on the image
+        const textLayout = [
+            { chars: '鮑公恆齋生壙志', x: -20, y: 7, size: 16, spacing: 1.14, type: 'title' },
+            { chars: '公名哲泰字恆齋姓鮑氏', x: -79, y: 8, size: 16, spacing: 1.13 },
+            { chars: '世篤鄞南鄞塘鄉鮑家埭人', x: -54, y: 200, size: 16, spacing: 1.14 },
+            { chars: '曾祖廷揚祖光華父', x: -27, y: 412, size: 16, spacing: 1.14 },
+            { chars: '明昌母侯氏兄弟二人公其長也', x: -30, y: 8, size: 16, spacing: 1.14 },
+            { chars: '自幼勤奮樸實循規蹈矩先喪母後喪父', x: -4, y: 258, size: 16, spacing: 1.14 },
+            { chars: '年十三即棄書而賈就業於鄉之京蘇雜貨肆兼售首飾緞匹既不得志則', x: -7, y: 9, size: 16, spacing: 1.14 },
+            { chars: '駕釣船捕魚江浙海中年三十始客上海營衣業旋經理煤號自是終身一', x: -10, y: 8, size: 16, spacing: 1.14 },
+            { chars: '業候時殖貨歲有奇贏商場稱信義焉奉耶穌教愛人如己樂善好施老而', x: -14, y: 7, size: 16, spacing: 1.14 },
+            { chars: '不倦在滬如寧波同鄉會四明公所四明醫院青年會等皆竭誠資助在鄉', x: -18, y: 10, size: 16, spacing: 1.14 },
+            { chars: '興辦學校修葺宗祠雖數千金不少吝蓋古鄉里之善人今宗教之信徒也', x: -22, y: 8, size: 16, spacing: 1.14 },
+            { chars: '無愧焉元配陳氏前卒繼配崔氏子三長咸鈞陳出先逝次咸鏘三咸龢皆', x: -26, y: 9, size: 16, spacing: 1.14 },
+            { chars: '崔出女四人適余頌威陸鳳石三四待字孫四人正鵠正鵬正鴻正鶴公生', x: -29, y: 9, size: 16, spacing: 1.14 },
+            { chars: '於前清同治四年乙丑九月二十七日歲甲子年正六十一月營生壙於天', x: -34, y: 10, size: 16, spacing: 1.14 },
+            { chars: '同邑張美翊撰文', x: 324, y: 357, size: 16, spacing: 1.13 },
+            { chars: '書丹', x: 321, y: 451, size: 16, spacing: 1.13 },
+            { chars: '句俞鮑氏宗譜', x: 14, y: 5, size: 28, spacing: 0.80 },
+            { chars: '卷六', x: 51, y: 167, size: 28, spacing: 0.80 },
+            { chars: '生壙志', x: 95, y: 245, size: 13, spacing: 1.18 },
+            { chars: '正始堂', x: 112, y: 499, size: 27, spacing: 0.85 },
+            { chars: '鳳山麓墓向坐', x: 104, y: 8, size: 16, spacing: 1.14 },
+            { chars: '向', x: 130, y: 142, size: 16, spacing: 1.13 },
+            { chars: '兼', x: 158, y: 180, size: 16, spacing: 1.13 },
+            { chars: '山環水抱當蔭其嗣人', x: 182, y: 237, size: 16, spacing: 1.14 },
+            { chars: '天鳳之山形勢飛翔華采翼翼和鳴鏘鏘卜吉於此子孫繁昌百歲之後其', x: 179, y: 9, size: 16, spacing: 1.14 },
+            { chars: '歸其藏', x: 176, y: 10, size: 16, spacing: 1.14 }
+        ];
+
+        // ========== STATE ==========
+        let isLocked = false;
+        let currentChar = null;
+        let currentPhrase = null;
+        let currentSection = null;
+
+        // ========== HELPER FUNCTIONS ==========
+
+        // Find which phrase a character belongs to
+        function findPhraseForChar(char, allChars, charIndex) {
+            // Build a string of nearby characters to help identify the phrase
+            const contextBefore = allChars.slice(Math.max(0, charIndex - 10), charIndex).join('');
+            const contextAfter = allChars.slice(charIndex, Math.min(allChars.length, charIndex + 10)).join('');
+            const context = contextBefore + contextAfter;
+
+            for (const phrase of phrases) {
+                if (phrase.chars.includes(char) && context.includes(phrase.chars.substring(0, Math.min(3, phrase.chars.length)))) {
+                    return phrase;
+                }
+            }
+
+            // Fallback: find any phrase containing this character
+            for (const phrase of phrases) {
+                if (phrase.chars.includes(char)) {
+                    return phrase;
+                }
+            }
+
+            return null;
+        }
+
+        // Find phrase by exact character sequence
+        function findExactPhrase(charElements, startIndex) {
+            const allChars = Array.from(charElements).map(el => el.dataset.char);
+
+            for (const phrase of phrases) {
+                const phraseChars = phrase.chars;
+                let matchStart = -1;
+
+                // Look for this phrase in the character sequence
+                for (let i = 0; i <= allChars.length - phraseChars.length; i++) {
+                    let match = true;
+                    for (let j = 0; j < phraseChars.length; j++) {
+                        if (allChars[i + j] !== phraseChars[j]) {
+                            match = false;
+                            break;
+                        }
+                    }
+                    if (match && startIndex >= i && startIndex < i + phraseChars.length) {
+                        return { phrase, startIndex: i, endIndex: i + phraseChars.length - 1 };
+                    }
+                }
+            }
+            return null;
+        }
+
+        // ========== RENDERING ==========
 
         function renderDocument() {
             const container = document.getElementById('document');
             container.innerHTML = '';
 
-            documentText.forEach((column, colIndex) => {
+            textLayout.forEach((column, colIndex) => {
                 const colDiv = document.createElement('div');
                 colDiv.className = 'column' + (column.type === 'title' ? ' title-column' : '');
-                colDiv.dataset.section = column.section;
                 colDiv.dataset.colIndex = colIndex;
-                colDiv.id = `col-${colIndex}`;
 
-                // Apply per-column positioning offsets
                 if (column.x !== 0 || column.y !== 0) {
                     colDiv.style.transform = `translate(${column.x}px, ${column.y}px)`;
                 }
 
-                for (let char of column.chars) {
+                for (let i = 0; i < column.chars.length; i++) {
+                    const char = column.chars[i];
                     const charSpan = document.createElement('span');
                     charSpan.className = 'char';
                     charSpan.textContent = char;
                     charSpan.dataset.char = char;
-                    charSpan.dataset.section = column.section;
+                    charSpan.dataset.colIndex = colIndex;
+                    charSpan.dataset.charIndex = i;
 
-                    // Apply per-column size and spacing
                     if (column.size) {
                         charSpan.style.fontSize = column.size + 'px';
                     }
@@ -716,8 +998,8 @@
                         charSpan.style.lineHeight = column.spacing;
                     }
 
-                    charSpan.addEventListener('mouseenter', () => showCharInfo(char, column.section));
-                    charSpan.addEventListener('click', () => highlightChar(charSpan));
+                    charSpan.addEventListener('mouseenter', handleCharHover);
+                    charSpan.addEventListener('click', handleCharClick);
                     colDiv.appendChild(charSpan);
                 }
 
@@ -725,97 +1007,216 @@
             });
         }
 
-        function showCharInfo(char, section) {
-            document.getElementById('char-display').textContent = char;
-            const data = characterData[char];
-            if (data) {
-                document.getElementById('pinyin').textContent = data.pinyin;
-                document.getElementById('meaning').textContent = data.meaning;
-                document.getElementById('context').textContent = data.context;
+        // ========== EVENT HANDLERS ==========
+
+        function handleCharHover(event) {
+            if (isLocked) return;
+
+            const charEl = event.target;
+            const char = charEl.dataset.char;
+            const colIndex = parseInt(charEl.dataset.colIndex);
+            const charIndex = parseInt(charEl.dataset.charIndex);
+
+            updateDisplay(char, colIndex, charIndex, charEl);
+        }
+
+        function handleCharClick(event) {
+            event.stopPropagation();
+            const charEl = event.target;
+
+            if (isLocked && charEl.classList.contains('locked')) {
+                // Unlock
+                isLocked = false;
+                document.querySelectorAll('.char.locked').forEach(el => el.classList.remove('locked'));
+                document.getElementById('lockIndicator').style.display = 'none';
             } else {
-                document.getElementById('pinyin').textContent = '(not available)';
-                document.getElementById('meaning').textContent = 'Not yet documented.';
-                document.getElementById('context').textContent = `Appears in the ${sectionInfo[section]?.name || 'document'} section.`;
+                // Lock to this character
+                isLocked = true;
+                document.querySelectorAll('.char.locked').forEach(el => el.classList.remove('locked'));
+                charEl.classList.add('locked');
+                document.getElementById('lockIndicator').style.display = 'block';
+
+                const char = charEl.dataset.char;
+                const colIndex = parseInt(charEl.dataset.colIndex);
+                const charIndex = parseInt(charEl.dataset.charIndex);
+                updateDisplay(char, colIndex, charIndex, charEl);
             }
         }
 
-        function highlightChar(element) {
-            document.querySelectorAll('.char.highlighted').forEach(el => el.classList.remove('highlighted'));
-            element.classList.add('highlighted');
-        }
+        function handleDocumentClick(event) {
+            if (event.target.classList.contains('char')) return;
 
-        function scrollToSection(sectionId) {
-            const column = document.querySelector(`[data-section="${sectionId}"]`);
-            if (column) {
-                column.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-                column.querySelectorAll('.char').forEach(char => {
-                    char.style.background = '#ffd700';
-                    setTimeout(() => char.style.background = '', 1000);
-                });
+            if (isLocked) {
+                isLocked = false;
+                document.querySelectorAll('.char.locked').forEach(el => el.classList.remove('locked'));
+                document.getElementById('lockIndicator').style.display = 'none';
             }
         }
 
-        // Opacity controls
-        document.getElementById('imageOpacity').addEventListener('input', function() {
-            const value = this.value / 100;
-            document.getElementById('originalImage').style.opacity = value;
-            document.getElementById('imageOpacityValue').textContent = this.value + '%';
-        });
-
-        document.getElementById('textBgOpacity').addEventListener('input', function() {
-            const value = this.value / 100;
-            document.getElementById('document').style.setProperty('--text-bg-opacity', value);
-            document.getElementById('textBgOpacityValue').textContent = this.value + '%';
-        });
-
-        // Alignment Controls - targets column index 13 (fourteenth segment)
-        const ALIGN_COL_INDEX = 25; // final segment: 歸其藏
-
-        function updateAlignment() {
-            const x = parseInt(document.getElementById('alignX').value);
-            const y = parseInt(document.getElementById('alignY').value);
-            const size = parseFloat(document.getElementById('alignSize').value);
-            const spacing = parseInt(document.getElementById('alignSpacing').value) / 100;
-
-            document.getElementById('alignXValue').textContent = x + 'px';
-            document.getElementById('alignYValue').textContent = y + 'px';
-            document.getElementById('alignSizeValue').textContent = size + 'px';
-            document.getElementById('alignSpacingValue').textContent = spacing.toFixed(2);
-
-            // Apply to current column being aligned
-            const col = document.querySelector(`[data-col-index="${ALIGN_COL_INDEX}"]`);
-            if (col) {
-                col.style.transform = `translate(${x}px, ${y}px)`;
-                col.querySelectorAll('.char').forEach(char => {
-                    char.style.fontSize = size + 'px';
-                    char.style.lineHeight = spacing;
-                });
-            }
-
-            // Update display
-            document.getElementById('currentValues').textContent =
-                `x:${x}, y:${y}, size:${size}, spacing:${spacing.toFixed(2)}`;
-        }
-
-        function resetAlignment() {
-            document.getElementById('alignX').value = 0;
-            document.getElementById('alignY').value = 0;
-            document.getElementById('alignSize').value = 16;
-            document.getElementById('alignSpacing').value = 113;
-            updateAlignment();
-        }
-
-        // Set up alignment slider listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            ['alignX', 'alignY', 'alignSize', 'alignSpacing'].forEach(id => {
-                document.getElementById(id).addEventListener('input', updateAlignment);
+        function updateDisplay(char, colIndex, charIndex, charEl) {
+            // Clear all highlights
+            document.querySelectorAll('.char').forEach(el => {
+                el.classList.remove('char-highlight', 'phrase-highlight', 'section-highlight');
             });
-        });
 
-        // Initialize
+            // Find the phrase this character belongs to
+            const column = textLayout[colIndex];
+            let phrase = null;
+            let section = null;
+
+            // Try to find exact phrase match
+            for (const p of phrases) {
+                if (column.chars.includes(p.chars)) {
+                    // Check if current char is within this phrase
+                    const phraseStart = column.chars.indexOf(p.chars);
+                    if (phraseStart !== -1 && charIndex >= phraseStart && charIndex < phraseStart + p.chars.length) {
+                        phrase = p;
+                        section = sections[p.section];
+
+                        // Highlight phrase characters
+                        const colEl = document.querySelector(`[data-col-index="${colIndex}"]`);
+                        if (colEl) {
+                            const charEls = colEl.querySelectorAll('.char');
+                            for (let i = phraseStart; i < phraseStart + p.chars.length; i++) {
+                                if (charEls[i]) {
+                                    charEls[i].classList.add('phrase-highlight');
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // If no exact match, try to find phrase containing this character
+            if (!phrase) {
+                for (const p of phrases) {
+                    if (p.chars.includes(char)) {
+                        phrase = p;
+                        section = sections[p.section];
+                        break;
+                    }
+                }
+            }
+
+            // If still no phrase, just get section from character position
+            if (!section) {
+                // Determine section based on column position
+                if (colIndex >= 16 && colIndex <= 19) {
+                    section = sections.spine;
+                } else if (colIndex === 0) {
+                    section = sections.title;
+                } else if (colIndex >= 14 && colIndex <= 15) {
+                    section = sections.credit;
+                } else if (colIndex >= 20) {
+                    section = sections.burial;
+                } else {
+                    section = sections.character; // default
+                }
+            }
+
+            // Highlight current character
+            charEl.classList.add('char-highlight');
+
+            // Highlight section (all characters in same section)
+            if (section) {
+                document.querySelectorAll('.char').forEach(el => {
+                    const elColIndex = parseInt(el.dataset.colIndex);
+                    const elColumn = textLayout[elColIndex];
+
+                    // Check if this column's characters belong to same section
+                    for (const p of phrases) {
+                        if (sections[p.section] === section && elColumn.chars.includes(p.chars)) {
+                            el.classList.add('section-highlight');
+                        }
+                    }
+                });
+            }
+
+            // Update info panel
+            updateInfoPanel(char, phrase, section);
+        }
+
+        function updateInfoPanel(char, phrase, section) {
+            // Character info
+            const charData = characterData[char];
+            document.getElementById('charDisplay').textContent = char;
+
+            if (charData) {
+                document.getElementById('pinyin').textContent = charData.pinyin;
+                document.getElementById('charMeaning').textContent = charData.meaning;
+                document.getElementById('charContext').textContent = charData.context;
+            } else {
+                document.getElementById('pinyin').textContent = '—';
+                document.getElementById('charMeaning').textContent = 'Character data not yet documented.';
+                document.getElementById('charContext').textContent = '';
+            }
+
+            // Phrase info
+            if (phrase) {
+                document.getElementById('phraseChinese').textContent = phrase.chars;
+                document.getElementById('phraseTranslation').textContent = '"' + phrase.translation + '"';
+                document.getElementById('phraseNotes').textContent = phrase.notes;
+                document.getElementById('phraseBox').style.display = 'block';
+            } else {
+                document.getElementById('phraseBox').style.display = 'block';
+                document.getElementById('phraseChinese').textContent = char;
+                document.getElementById('phraseTranslation').textContent = '(Single character)';
+                document.getElementById('phraseNotes').textContent = 'This character appears independently or as part of a phrase not yet documented.';
+            }
+
+            // Section info
+            if (section) {
+                document.getElementById('sectionTitle').textContent = section.name;
+                document.getElementById('sectionChinese').textContent = section.chinese;
+                document.getElementById('sectionDesc').textContent = section.description;
+            }
+        }
+
+        // ========== OPACITY SLIDER ==========
+
+        function updateOpacity(value) {
+            const v = value / 100;
+
+            // Original image: fully visible at 0, fully hidden at 100
+            document.getElementById('originalImage').style.opacity = 1 - v;
+
+            // Text: fully transparent at 0, fully opaque at 100
+            document.documentElement.style.setProperty('--text-opacity', v);
+            document.documentElement.style.setProperty('--text-bg-opacity', v);
+
+            // Update label
+            const label = document.getElementById('overlayValue');
+            if (value == 0) {
+                label.textContent = 'Original image only';
+            } else if (value == 100) {
+                label.textContent = 'Transcription only';
+            } else if (value < 50) {
+                label.textContent = 'Original + light overlay';
+            } else {
+                label.textContent = 'Original + strong overlay';
+            }
+        }
+
+        // ========== INITIALIZATION ==========
+
         document.addEventListener('DOMContentLoaded', () => {
             renderDocument();
-            document.getElementById('originalImage').style.opacity = 0;
+
+            // Set up opacity slider
+            const slider = document.getElementById('overlaySlider');
+            slider.addEventListener('input', (e) => updateOpacity(e.target.value));
+            updateOpacity(slider.value);
+
+            // Set up document click handler for unlocking
+            document.getElementById('documentContainer').addEventListener('click', handleDocumentClick);
+
+            // Initialize with first character
+            const firstChar = document.querySelector('.char');
+            if (firstChar) {
+                const char = firstChar.dataset.char;
+                updateDisplay(char, 0, 0, firstChar);
+            }
         });
     </script>
 </body>

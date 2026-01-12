@@ -160,31 +160,30 @@
 
         .char.char-highlight {
             outline: 2px solid #e74c3c;
-            outline-offset: 1px;
-            z-index: 10;
+            outline-offset: 0px;
         }
 
         .char.locked {
             background: rgba(180, 140, 0, 0.15) !important;
         }
 
-        /* Phrase highlight box - drawn around groups of characters */
+        /* Highlight boxes float on top of characters */
+        /* Section (outermost) → Phrase → Character (innermost) */
+
+        .section-highlight-box {
+            position: absolute;
+            border: 2px solid rgba(39, 174, 96, 0.7);
+            border-radius: 6px;
+            pointer-events: none;
+            z-index: 100;
+        }
+
         .phrase-highlight-box {
             position: absolute;
             border: 2px solid #3498db;
             border-radius: 4px;
             pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Section highlight box - drawn around column groups */
-        .section-highlight-box {
-            position: absolute;
-            border: 2px solid rgba(39, 174, 96, 0.7);
-            border-radius: 6px;
-            background: rgba(39, 174, 96, 0.08);
-            pointer-events: none;
-            z-index: 0;
+            z-index: 101;
         }
 
         .info-panel {
@@ -918,12 +917,14 @@
             const firstRect = firstChar.getBoundingClientRect();
             const lastRect = lastChar.getBoundingClientRect();
 
+            // Phrase box with extra margin outside character highlight
+            const margin = 4;
             const box = document.createElement('div');
             box.className = 'phrase-highlight-box';
-            box.style.top = (firstRect.top - colRect.top - 2) + 'px';
-            box.style.left = (firstRect.left - colRect.left - 3) + 'px';
-            box.style.width = (Math.max(firstRect.width, lastRect.width) + 6) + 'px';
-            box.style.height = (lastRect.bottom - firstRect.top + 4) + 'px';
+            box.style.top = (firstRect.top - colRect.top - margin) + 'px';
+            box.style.left = (firstRect.left - colRect.left - margin) + 'px';
+            box.style.width = (Math.max(firstRect.width, lastRect.width) + margin * 2) + 'px';
+            box.style.height = (lastRect.bottom - firstRect.top + margin * 2) + 'px';
 
             colEl.appendChild(box);
         }
@@ -978,12 +979,14 @@
                     maxBottom = Math.max(maxBottom, rect.bottom);
                 });
 
+                // Section box with extra margin outside phrase highlight
+                const margin = 8;
                 const box = document.createElement('div');
                 box.className = 'section-highlight-box';
-                box.style.left = (minLeft - docRect.left - 4) + 'px';
-                box.style.top = (minTop - docRect.top - 4) + 'px';
-                box.style.width = (maxRight - minLeft + 8) + 'px';
-                box.style.height = (maxBottom - minTop + 8) + 'px';
+                box.style.left = (minLeft - docRect.left - margin) + 'px';
+                box.style.top = (minTop - docRect.top - margin) + 'px';
+                box.style.width = (maxRight - minLeft + margin * 2) + 'px';
+                box.style.height = (maxBottom - minTop + margin * 2) + 'px';
 
                 documentEl.appendChild(box);
             });

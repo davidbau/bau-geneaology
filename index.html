@@ -107,8 +107,8 @@
             position: absolute;
             top: 2%;
             right: 1%;
-            width: 60%;
-            height: 60%;
+            width: 360px;  /* 60% of base 600px */
+            height: 360px; /* 60% of base 600px */
             z-index: 2;
             display: flex;
             flex-direction: row-reverse;
@@ -116,6 +116,8 @@
             align-items: flex-start;
             padding: 0;
             background: transparent;
+            transform-origin: top right;
+            /* Scale factor applied by JS to match container size */
         }
 
         .column {
@@ -787,7 +789,7 @@
         // Layout data - EXACT POSITIONS FROM ORIGINAL COMMIT ecf7514
         const textLayout = [
             { type: 'title', section: 'title', chars: '鮑公恆齋生壙志', x: -20, y: 7, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'ancestry', chars: '公名哲泰字恆齋姓鮑氏', x: -79, y: 8, size: 16, spacing: 1.13 },
+            { type: 'text', section: 'ancestry', chars: '公名哲泰字恆齋姓鮑氏', x: -79, y: 8, size: 16, spacing: 1.14 },
             { type: 'text', section: 'ancestry', chars: '世篤鄞南鄞塘鄉鮑家埭人', x: -54, y: 200, size: 16, spacing: 1.14 },
             { type: 'text', section: 'family_background', chars: '曾祖廷揚祖光華父', x: -27, y: 412, size: 16, spacing: 1.14 },
             { type: 'text', section: 'family_background', chars: '明昌母侯氏兄弟二人公其長也', x: -30, y: 8, size: 16, spacing: 1.14 },
@@ -800,15 +802,15 @@
             { type: 'text', section: 'family', chars: '無愧焉元配陳氏前卒繼配崔氏子三長咸鈞陳出先逝次咸鏘三咸龢皆', x: -26, y: 9, size: 16, spacing: 1.14 },
             { type: 'text', section: 'family', chars: '崔出女四人適余頌威陸鳳石三四待字孫四人正鵠正鵬正鴻正鶴公生', x: -29, y: 9, size: 16, spacing: 1.14 },
             { type: 'text', section: 'death', chars: '於前清同治四年乙丑九月二十七日歲甲子年正六十一月營生壙於天', x: -34, y: 10, size: 16, spacing: 1.14 },
-            { type: 'credit', section: 'credit', chars: '同邑張美翊撰文', x: 324, y: 357, size: 16, spacing: 1.13 },
-            { type: 'credit', section: 'credit', chars: '書丹', x: 321, y: 451, size: 16, spacing: 1.13 },
+            { type: 'credit', section: 'credit', chars: '同邑張美翊撰文', x: 324, y: 357, size: 16, spacing: 1.14 },
+            { type: 'credit', section: 'credit', chars: '書丹', x: 321, y: 451, size: 16, spacing: 1.14 },
             { type: 'spine', section: 'spine', chars: '句俞鮑氏宗譜', x: 14, y: 5, size: 28, spacing: 0.80 },
             { type: 'spine', section: 'spine', chars: '卷六', x: 51, y: 167, size: 28, spacing: 0.80 },
             { type: 'spine', section: 'spine', chars: '生壙志', x: 95, y: 245, size: 13, spacing: 1.18 },
             { type: 'spine', section: 'spine', chars: '正始堂', x: 112, y: 499, size: 27, spacing: 0.85 },
             { type: 'text', section: 'burial', chars: '鳳山麓墓向坐', x: 104, y: 8, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'burial', chars: '向', x: 130, y: 142, size: 16, spacing: 1.13 },
-            { type: 'text', section: 'burial', chars: '兼', x: 158, y: 180, size: 16, spacing: 1.13 },
+            { type: 'text', section: 'burial', chars: '向', x: 130, y: 142, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'burial', chars: '兼', x: 158, y: 180, size: 16, spacing: 1.14 },
             { type: 'text', section: 'burial', chars: '山環水抱當蔭其嗣人', x: 182, y: 237, size: 16, spacing: 1.14 },
             { type: 'text', section: 'burial', chars: '天鳳之山形勢飛翔華采翼翼和鳴鏘鏘卜吉於此子孫繁昌百歲之後其', x: 179, y: 9, size: 16, spacing: 1.14 },
             { type: 'text', section: 'burial', chars: '歸其藏', x: 176, y: 10, size: 16, spacing: 1.14 }
@@ -958,14 +960,19 @@
             const firstRect = firstChar.getBoundingClientRect();
             const lastRect = lastChar.getBoundingClientRect();
 
+            // Get current scale factor (use offsetWidth to include border)
+            const container = document.getElementById('documentContainer');
+            const scale = container.offsetWidth / BASE_SIZE;
+
             // Phrase box with extra margin outside character highlight
+            // Divide by scale since we're positioning inside a scaled container
             const margin = 4;
             const box = document.createElement('div');
             box.className = 'phrase-highlight-box';
-            box.style.top = (firstRect.top - colRect.top - margin) + 'px';
-            box.style.left = (firstRect.left - colRect.left - margin) + 'px';
-            box.style.width = (Math.max(firstRect.width, lastRect.width) + margin * 2) + 'px';
-            box.style.height = (lastRect.bottom - firstRect.top + margin * 2) + 'px';
+            box.style.top = ((firstRect.top - colRect.top) / scale - margin) + 'px';
+            box.style.left = ((firstRect.left - colRect.left) / scale - margin) + 'px';
+            box.style.width = (Math.max(firstRect.width, lastRect.width) / scale + margin * 2) + 'px';
+            box.style.height = ((lastRect.bottom - firstRect.top) / scale + margin * 2) + 'px';
 
             colEl.appendChild(box);
         }
@@ -978,6 +985,10 @@
             const documentEl = document.getElementById('document');
             const docRect = documentEl.getBoundingClientRect();
 
+            // Get current scale factor (use offsetWidth to include border)
+            const container = document.getElementById('documentContainer');
+            const scale = container.offsetWidth / BASE_SIZE;
+
             // Group contiguous columns (columns that are visually adjacent)
             // First, gather all column rects and sort by x position
             const colData = [];
@@ -989,7 +1000,7 @@
             // Sort by x position (right to left for traditional Chinese)
             colData.sort((a, b) => b.rect.left - a.rect.left);
 
-            // Group columns that are close together (within 50px)
+            // Group columns that are close together (within 50px scaled)
             const groups = [];
             let currentGroup = [colData[0]];
 
@@ -998,7 +1009,7 @@
                 const curr = colData[i];
                 // Check if this column is close to the previous one
                 const gap = prev.rect.left - curr.rect.right;
-                if (gap < 50) {
+                if (gap < 50 * scale) {
                     currentGroup.push(curr);
                 } else {
                     groups.push(currentGroup);
@@ -1021,13 +1032,14 @@
                 });
 
                 // Section box with extra margin outside phrase highlight
+                // Divide by scale since we're positioning inside a scaled container
                 const margin = 8;
                 const box = document.createElement('div');
                 box.className = 'section-highlight-box';
-                box.style.left = (minLeft - docRect.left - margin) + 'px';
-                box.style.top = (minTop - docRect.top - margin) + 'px';
-                box.style.width = (maxRight - minLeft + margin * 2) + 'px';
-                box.style.height = (maxBottom - minTop + margin * 2) + 'px';
+                box.style.left = ((minLeft - docRect.left) / scale - margin) + 'px';
+                box.style.top = ((minTop - docRect.top) / scale - margin) + 'px';
+                box.style.width = ((maxRight - minLeft) / scale + margin * 2) + 'px';
+                box.style.height = ((maxBottom - minTop) / scale + margin * 2) + 'px';
 
                 documentEl.appendChild(box);
             });
@@ -1076,10 +1088,24 @@
             document.documentElement.style.setProperty('--text-bg-opacity', v);
         }
 
+        // ========== SCALING ==========
+
+        const BASE_SIZE = 600; // Base container size that positions were calibrated for
+
+        function updateScale() {
+            const container = document.getElementById('documentContainer');
+            const doc = document.getElementById('document');
+            // Use offsetWidth to include border in calculation
+            const actualSize = container.offsetWidth;
+            const scale = actualSize / BASE_SIZE;
+            doc.style.transform = `scale(${scale})`;
+        }
+
         // ========== INITIALIZATION ==========
 
         document.addEventListener('DOMContentLoaded', () => {
             renderDocument();
+            updateScale();
 
             const slider = document.getElementById('overlaySlider');
             slider.addEventListener('input', (e) => updateOpacity(e.target.value));
@@ -1098,6 +1124,9 @@
             if (firstChar) {
                 updateDisplay(firstChar);
             }
+
+            // Update scale on window resize
+            window.addEventListener('resize', updateScale);
         });
     </script>
 </body>

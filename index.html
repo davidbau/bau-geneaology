@@ -165,7 +165,7 @@
         }
 
         .char.locked {
-            background: #ffeaa7 !important;
+            background: rgba(180, 140, 0, 0.15) !important;
         }
 
         /* Phrase highlight box - drawn around groups of characters */
@@ -188,11 +188,10 @@
         }
 
         .info-panel {
-            width: 400px;
-            background: #fff;
-            border: 2px solid #8b4513;
-            border-radius: 8px;
-            padding: 15px;
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             position: sticky;
             top: 20px;
             max-height: calc(100vh - 40px);
@@ -200,113 +199,102 @@
             flex-shrink: 0;
         }
 
-        .lock-indicator {
-            text-align: center;
-            padding: 6px;
-            background: #ffeaa7;
-            border-radius: 4px;
-            margin-bottom: 12px;
-            font-size: 0.85em;
-            color: #856404;
-        }
-
         /* Character Level - RED - at top */
         .char-info-box {
             border: 2px solid #e74c3c;
             border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
+            padding: 10px;
             background: #fdf2f2;
         }
 
         .character-display {
-            font-size: 56px;
+            font-size: 48px;
             text-align: center;
-            padding: 10px;
+            padding: 4px;
             background: #fff;
-            border-radius: 6px;
-            margin-bottom: 8px;
+            border-radius: 4px;
+            margin-bottom: 4px;
         }
 
         .pinyin {
-            font-size: 1.1em;
+            font-size: 1em;
             color: #8b4513;
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .char-meaning {
-            font-size: 0.9em;
-            line-height: 1.5;
+            font-size: 0.85em;
+            line-height: 1.3;
             color: #333;
         }
 
         .char-context {
-            font-size: 0.85em;
+            font-size: 0.8em;
             color: #666;
-            margin-top: 6px;
+            margin-top: 4px;
             font-style: italic;
+            line-height: 1.3;
         }
 
         /* Phrase Level - BLUE - middle */
         .phrase-info-box {
             border: 2px solid #3498db;
             border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
+            padding: 10px;
             background: #f0f7fd;
         }
 
         .phrase-chinese {
-            font-size: 1.3em;
+            font-size: 1.2em;
             text-align: center;
-            padding: 8px;
+            padding: 4px;
             background: #fff;
-            border-radius: 6px;
-            margin-bottom: 8px;
+            border-radius: 4px;
+            margin-bottom: 6px;
             letter-spacing: 2px;
         }
 
         .phrase-translation {
-            font-size: 0.95em;
-            line-height: 1.6;
+            font-size: 0.9em;
+            line-height: 1.35;
             color: #333;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .phrase-notes {
-            font-size: 0.85em;
+            font-size: 0.8em;
             color: #555;
             background: #e8f4fc;
-            padding: 8px;
+            padding: 6px;
             border-radius: 4px;
-            line-height: 1.5;
+            line-height: 1.3;
         }
 
         /* Section Level - GREEN - bottom */
         .section-info-box {
             border: 2px solid #27ae60;
             border-radius: 8px;
-            padding: 12px;
+            padding: 10px;
             background: #f0fdf4;
         }
 
         .section-title {
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: bold;
             color: #1e8449;
-            margin-bottom: 6px;
+            margin-bottom: 2px;
         }
 
         .section-chinese {
-            font-size: 0.95em;
+            font-size: 0.9em;
             color: #27ae60;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .section-description {
-            font-size: 0.9em;
-            line-height: 1.6;
+            font-size: 0.8em;
+            line-height: 1.3;
             color: #333;
         }
 
@@ -339,16 +327,12 @@
                 </div>
                 <div class="vertical-slider">
                     <span class="slider-label">Transcribed</span>
-                    <input type="range" id="overlaySlider" min="0" max="100" value="50">
+                    <input type="range" id="overlaySlider" min="0" max="100" value="0">
                     <span class="slider-label">Original</span>
                 </div>
             </div>
 
             <div class="info-panel" id="info-panel">
-                <div id="lockIndicator" class="lock-indicator" style="display: none;">
-                    Locked - click anywhere to unlock
-                </div>
-
                 <!-- Character at top (RED) -->
                 <div class="char-info-box" id="charBox">
                     <div class="character-display" id="charDisplay">鮑</div>
@@ -853,13 +837,11 @@
                 // Unlock
                 isLocked = false;
                 document.querySelectorAll('.char.locked').forEach(el => el.classList.remove('locked'));
-                document.getElementById('lockIndicator').style.display = 'none';
                 currentCharEl = null;
             } else {
                 // Lock to this character
                 isLocked = true;
                 charEl.classList.add('locked');
-                document.getElementById('lockIndicator').style.display = 'block';
                 currentCharEl = charEl;
                 updateDisplay(charEl);
             }
@@ -871,7 +853,6 @@
             if (isLocked) {
                 isLocked = false;
                 document.querySelectorAll('.char.locked').forEach(el => el.classList.remove('locked'));
-                document.getElementById('lockIndicator').style.display = 'none';
                 currentCharEl = null;
             }
         }

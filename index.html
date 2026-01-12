@@ -86,7 +86,7 @@
             border-radius: 8px;
             overflow: hidden;
             aspect-ratio: 1 / 1;
-            max-width: 650px;
+            max-width: 600px;
             margin: 0 auto;
             cursor: pointer;
         }
@@ -176,9 +176,14 @@
             z-index: 0;
         }
 
-        /* Section highlight - subtle background on all section chars */
-        .char.section-highlight {
-            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.3);
+        /* Section highlight box - drawn around column groups */
+        .section-highlight-box {
+            position: absolute;
+            border: 2px solid rgba(39, 174, 96, 0.7);
+            border-radius: 6px;
+            background: rgba(39, 174, 96, 0.08);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .info-panel {
@@ -408,10 +413,15 @@
                 chinese: '先世父母',
                 description: 'A listing of the subject\'s immediate ancestors: great-grandfather, grandfather, and father, along with his mother\'s maiden name and information about siblings. This establishes his place in the family lineage.'
             },
-            character: {
-                name: 'Character & Virtues',
-                chinese: '品德',
-                description: 'This section praises the subject\'s moral character and virtuous deeds. It describes his lifelong qualities, religious faith (Christianity), and generous philanthropic contributions to community institutions in both Shanghai and his hometown.'
+            youth: {
+                name: 'Youth & Early Character',
+                chinese: '幼年品性',
+                description: 'This section describes the subject\'s character from childhood: his diligence, honesty, and adherence to proper conduct. It also notes the early loss of both parents, which shaped his self-reliance.'
+            },
+            virtues: {
+                name: 'Virtues & Philanthropy',
+                chinese: '德行善舉',
+                description: 'This section praises the subject\'s moral character in his business dealings, his Christian faith, and his generous philanthropic contributions to community institutions in both Shanghai and his hometown, including hospitals, schools, and clan temples.'
             },
             occupation: {
                 name: 'Occupation & Career',
@@ -466,16 +476,16 @@
             { section: 'family_background', chars: '公其長也', translation: 'He was the eldest', notes: '長 indicates senior position among siblings.' },
 
             // CHARACTER
-            { section: 'character', chars: '自幼勤奮樸實', translation: 'From youth, diligent and honest', notes: '勤奮 and 樸實 are cardinal virtues in Chinese ethics.' },
-            { section: 'character', chars: '循規蹈矩', translation: 'Following rules and walking the proper path', notes: 'A classical idiom meaning strictly law-abiding.' },
-            { section: 'character', chars: '先喪母後喪父', translation: 'First lost his mother, then his father', notes: 'Records early loss of both parents.' },
-            { section: 'character', chars: '業候時殖貨', translation: 'In business, watched for opportunities', notes: '候時 means observing timing; 殖貨 means accumulating wealth.' },
-            { section: 'character', chars: '歲有奇贏', translation: 'Every year had surplus profits', notes: '奇贏 indicates profits beyond expectations.' },
-            { section: 'character', chars: '商場稱信義焉', translation: 'In the marketplace, praised for integrity', notes: '信義 was the highest praise for a merchant.' },
-            { section: 'character', chars: '奉耶穌教', translation: 'Followed Christianity', notes: 'Christianity spread in Ningbo through 19th century missionaries.' },
-            { section: 'character', chars: '愛人如己', translation: 'Loved others as himself', notes: 'The Golden Rule from Matthew 22:39.' },
-            { section: 'character', chars: '樂善好施', translation: 'Delighted in goodness and giving', notes: 'A classical phrase describing philanthropic character.' },
-            { section: 'character', chars: '老而不倦', translation: 'In old age, untiring', notes: 'His charitable work continued throughout life.' },
+            { section: 'youth', chars: '自幼勤奮樸實', translation: 'From youth, diligent and honest', notes: '勤奮 and 樸實 are cardinal virtues in Chinese ethics.' },
+            { section: 'youth', chars: '循規蹈矩', translation: 'Following rules and walking the proper path', notes: 'A classical idiom meaning strictly law-abiding.' },
+            { section: 'youth', chars: '先喪母後喪父', translation: 'First lost his mother, then his father', notes: 'Records early loss of both parents.' },
+            { section: 'virtues', chars: '業候時殖貨', translation: 'In business, watched for opportunities', notes: '候時 means observing timing; 殖貨 means accumulating wealth.' },
+            { section: 'virtues', chars: '歲有奇贏', translation: 'Every year had surplus profits', notes: '奇贏 indicates profits beyond expectations.' },
+            { section: 'virtues', chars: '商場稱信義焉', translation: 'In the marketplace, praised for integrity', notes: '信義 was the highest praise for a merchant.' },
+            { section: 'virtues', chars: '奉耶穌教', translation: 'Followed Christianity', notes: 'Christianity spread in Ningbo through 19th century missionaries.' },
+            { section: 'virtues', chars: '愛人如己', translation: 'Loved others as himself', notes: 'The Golden Rule from Matthew 22:39.' },
+            { section: 'virtues', chars: '樂善好施', translation: 'Delighted in goodness and giving', notes: 'A classical phrase describing philanthropic character.' },
+            { section: 'virtues', chars: '老而不倦', translation: 'In old age, untiring', notes: 'His charitable work continued throughout life.' },
 
             // OCCUPATION
             { section: 'occupation', chars: '年十三即棄書而賈', translation: 'At thirteen, left study for trade', notes: 'Left school to enter commerce.' },
@@ -772,12 +782,12 @@
             { type: 'text', section: 'ancestry', chars: '世篤鄞南鄞塘鄉鮑家埭人', x: -54, y: 200, size: 16, spacing: 1.14 },
             { type: 'text', section: 'family_background', chars: '曾祖廷揚祖光華父', x: -27, y: 412, size: 16, spacing: 1.14 },
             { type: 'text', section: 'family_background', chars: '明昌母侯氏兄弟二人公其長也', x: -30, y: 8, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'character', chars: '自幼勤奮樸實循規蹈矩先喪母後喪父', x: -4, y: 258, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'youth', chars: '自幼勤奮樸實循規蹈矩先喪母後喪父', x: -4, y: 258, size: 16, spacing: 1.14 },
             { type: 'text', section: 'occupation', chars: '年十三即棄書而賈就業於鄉之京蘇雜貨肆兼售首飾緞匹既不得志則', x: -7, y: 9, size: 16, spacing: 1.14 },
             { type: 'text', section: 'occupation', chars: '駕釣船捕魚江浙海中年三十始客上海營衣業旋經理煤號自是終身一', x: -10, y: 8, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'character', chars: '業候時殖貨歲有奇贏商場稱信義焉奉耶穌教愛人如己樂善好施老而', x: -14, y: 7, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'character', chars: '不倦在滬如寧波同鄉會四明公所四明醫院青年會等皆竭誠資助在鄉', x: -18, y: 10, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'character', chars: '興辦學校修葺宗祠雖數千金不少吝蓋古鄉里之善人今宗教之信徒也', x: -22, y: 8, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'virtues', chars: '業候時殖貨歲有奇贏商場稱信義焉奉耶穌教愛人如己樂善好施老而', x: -14, y: 7, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'virtues', chars: '不倦在滬如寧波同鄉會四明公所四明醫院青年會等皆竭誠資助在鄉', x: -18, y: 10, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'virtues', chars: '興辦學校修葺宗祠雖數千金不少吝蓋古鄉里之善人今宗教之信徒也', x: -22, y: 8, size: 16, spacing: 1.14 },
             { type: 'text', section: 'family', chars: '無愧焉元配陳氏前卒繼配崔氏子三長咸鈞陳出先逝次咸鏘三咸龢皆', x: -26, y: 9, size: 16, spacing: 1.14 },
             { type: 'text', section: 'family', chars: '崔出女四人適余頌威陸鳳石三四待字孫四人正鵠正鵬正鴻正鶴公生', x: -29, y: 9, size: 16, spacing: 1.14 },
             { type: 'text', section: 'death', chars: '於前清同治四年乙丑九月二十七日歲甲子年正六十一月營生壙於天', x: -34, y: 10, size: 16, spacing: 1.14 },
@@ -888,9 +898,10 @@
 
             // Clear all highlights
             document.querySelectorAll('.char').forEach(el => {
-                el.classList.remove('char-highlight', 'section-highlight');
+                el.classList.remove('char-highlight');
             });
             document.querySelectorAll('.phrase-highlight-box').forEach(el => el.remove());
+            document.querySelectorAll('.section-highlight-box').forEach(el => el.remove());
 
             // Highlight current character (RED)
             charEl.classList.add('char-highlight');
@@ -917,11 +928,9 @@
                 }
             }
 
-            // Highlight section (GREEN) - all chars in same section
+            // Highlight section (GREEN) - draw rectangle around column groups
             const section = sections[sectionId];
-            document.querySelectorAll(`.char[data-section="${sectionId}"]`).forEach(el => {
-                el.classList.add('section-highlight');
-            });
+            drawSectionHighlight(sectionId);
 
             // Update info panel
             updateInfoPanel(char, foundPhrase, section);
@@ -949,6 +958,67 @@
             box.style.height = (lastRect.bottom - firstRect.top + 4) + 'px';
 
             colEl.appendChild(box);
+        }
+
+        function drawSectionHighlight(sectionId) {
+            // Find all columns belonging to this section
+            const sectionColumns = document.querySelectorAll(`.column[data-section="${sectionId}"]`);
+            if (sectionColumns.length === 0) return;
+
+            const documentEl = document.getElementById('document');
+            const docRect = documentEl.getBoundingClientRect();
+
+            // Group contiguous columns (columns that are visually adjacent)
+            // First, gather all column rects and sort by x position
+            const colData = [];
+            sectionColumns.forEach(col => {
+                const rect = col.getBoundingClientRect();
+                colData.push({ el: col, rect: rect });
+            });
+
+            // Sort by x position (right to left for traditional Chinese)
+            colData.sort((a, b) => b.rect.left - a.rect.left);
+
+            // Group columns that are close together (within 50px)
+            const groups = [];
+            let currentGroup = [colData[0]];
+
+            for (let i = 1; i < colData.length; i++) {
+                const prev = currentGroup[currentGroup.length - 1];
+                const curr = colData[i];
+                // Check if this column is close to the previous one
+                const gap = prev.rect.left - curr.rect.right;
+                if (gap < 50) {
+                    currentGroup.push(curr);
+                } else {
+                    groups.push(currentGroup);
+                    currentGroup = [curr];
+                }
+            }
+            groups.push(currentGroup);
+
+            // Draw a box around each group
+            groups.forEach(group => {
+                // Calculate bounding box
+                let minLeft = Infinity, minTop = Infinity;
+                let maxRight = -Infinity, maxBottom = -Infinity;
+
+                group.forEach(({ rect }) => {
+                    minLeft = Math.min(minLeft, rect.left);
+                    minTop = Math.min(minTop, rect.top);
+                    maxRight = Math.max(maxRight, rect.right);
+                    maxBottom = Math.max(maxBottom, rect.bottom);
+                });
+
+                const box = document.createElement('div');
+                box.className = 'section-highlight-box';
+                box.style.left = (minLeft - docRect.left - 4) + 'px';
+                box.style.top = (minTop - docRect.top - 4) + 'px';
+                box.style.width = (maxRight - minLeft + 8) + 'px';
+                box.style.height = (maxBottom - minTop + 8) + 'px';
+
+                documentEl.appendChild(box);
+            });
         }
 
         function updateInfoPanel(char, phrase, section) {

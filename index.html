@@ -204,6 +204,21 @@
             border-radius: 8px;
             padding: 10px;
             background: #fdf2f2;
+            position: relative;
+        }
+
+        .lock-icon {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0.7;
+            display: none;
+        }
+
+        .lock-icon:hover {
+            opacity: 1;
         }
 
         .character-display {
@@ -226,6 +241,7 @@
             font-size: 0.85em;
             line-height: 1.3;
             color: #333;
+            text-align: center;
         }
 
         .char-context {
@@ -234,6 +250,7 @@
             margin-top: 4px;
             font-style: italic;
             line-height: 1.3;
+            text-align: center;
         }
 
         /* Phrase Level - BLUE - middle */
@@ -242,6 +259,7 @@
             border-radius: 8px;
             padding: 10px;
             background: #f0f7fd;
+            min-height: 189px;
         }
 
         .phrase-chinese {
@@ -264,9 +282,6 @@
         .phrase-notes {
             font-size: 0.8em;
             color: #555;
-            background: #e8f4fc;
-            padding: 6px;
-            border-radius: 4px;
             line-height: 1.3;
         }
 
@@ -276,6 +291,7 @@
             border-radius: 8px;
             padding: 10px;
             background: #f0fdf4;
+            min-height: 140px;
         }
 
         .section-title {
@@ -338,6 +354,7 @@
                     <div class="pinyin" id="pinyin">bào</div>
                     <div class="char-meaning" id="charMeaning">Surname Bao; also means salted fish</div>
                     <div class="char-context" id="charContext">The family surname. An important clan in the Ningbo region.</div>
+                    <span class="lock-icon" id="lockIcon" title="Click to unlock">🔒</span>
                 </div>
 
                 <!-- Phrase in middle (BLUE) -->
@@ -423,77 +440,99 @@
         // Phrases organized by section, with translations and scholarly notes
         const phrases = [
             // SPINE
-            { section: 'spine', chars: '句俞鮑氏宗譜', translation: 'Bao Clan Genealogy of Gouyu', notes: 'Gouyu (句俞) is an archaic name for the Siming Mountains region near Ningbo and Yuyao. This identifies the genealogy as belonging to the Bao clan of this area.' },
-            { section: 'spine', chars: '卷六', translation: 'Volume Six', notes: 'Indicates this burial record is found in the sixth volume of the multi-volume genealogy.' },
-            { section: 'spine', chars: '生壙志', translation: 'Burial Record', notes: '生壙 refers to a tomb prepared during one\'s lifetime. 志 means record or inscription.' },
-            { section: 'spine', chars: '正始堂', translation: 'Zhengshi Hall', notes: 'The 堂號 (hall name) of the publishing house or family branch. 正始 means "correct beginning."' },
+            { section: 'spine', chars: '句俞鮑氏宗譜', translation: 'Bao Clan Genealogy of Gouyu', notes: '句俞 (Gōuyú) is an archaic toponym for the Siming Mountains region near Ningbo. 宗譜 (zōngpǔ) is a formal clan genealogy—a vital document recording lineage, marriages, and achievements across generations. Such genealogies were compiled and updated periodically, often funded by successful clan members.' },
+            { section: 'spine', chars: '卷六', translation: 'Volume Six', notes: '卷 (juàn) originally meant a scroll; here it indicates a bound volume. Large clan genealogies often comprised dozens of volumes organized by branch, generation, or document type.' },
+            { section: 'spine', chars: '生壙志', translation: 'Burial Record [Prepared During Lifetime]', notes: '生壙 (shēngkuàng) specifically indicates a tomb prepared while the subject was still alive—a practice of the wealthy that ensured proper burial arrangements. 志 (zhì) means "record" or "treatise," giving the document scholarly gravitas.' },
+            { section: 'spine', chars: '正始堂', translation: 'Zhengshi Hall', notes: '堂號 (tánghào, "hall name") identifies the family branch or publishing house. 正始 means "correct beginning" or "orthodox origin"—an auspicious name suggesting adherence to proper Confucian tradition. Hall names distinguished different branches of large clans.' },
 
             // TITLE
-            { section: 'title', chars: '鮑公恆齋生壙志', translation: 'Burial Record of Mr. Bao Hengzhai', notes: '公 is an honorific. 恆齋 (Hengzhai, "Persevering Studio") is his courtesy name (字). 生壙志 indicates this epitaph was prepared during his lifetime.' },
+            { section: 'title', chars: '鮑公恆齋生壙志', translation: 'Burial Record of Mr. Bao Hengzhai', notes: '公 (gōng) is an honorific meaning "gentleman" or "sir." 恆齋 (Héngzhāi, "Studio of Perseverance") is his courtesy name (字). The title 生壙志 indicates this epitaph was composed while he was still living—a mark of foresight and proper preparation for death.' },
 
             // ANCESTRY
-            { section: 'ancestry', chars: '公名哲泰', translation: 'The gentleman\'s name was Zhetai', notes: '名 refers to the personal name (given name). 哲 means wise; 泰 means great or peaceful.' },
-            { section: 'ancestry', chars: '字恆齋', translation: 'Courtesy name Hengzhai', notes: 'The 字 (courtesy name) was given at age 20 and used by peers. 恆 means constant; 齋 means studio.' },
-            { section: 'ancestry', chars: '姓鮑氏', translation: 'Surname Bao', notes: '姓 introduces the family name. 氏 is added in formal genealogical contexts.' },
-            { section: 'ancestry', chars: '世篤鄞南鄞塘鄉鮑家埭人', translation: 'For generations devoted to this place; a person of Baojiadai, Nantang Township, southern Yin County', notes: '鄞 (Yin County) is now part of Ningbo, Zhejiang. 埭 means embankment.' },
+            { section: 'ancestry', chars: '公名哲泰', translation: 'The gentleman\'s given name was Zhetai', notes: '名 (míng) is the personal name given at birth, used by elders and in formal documents. 哲 means "wise" or "sagacious"; 泰 means "great" or "peaceful"—auspicious characters reflecting parental hopes.' },
+            { section: 'ancestry', chars: '字恆齋', translation: 'Courtesy name Hengzhai', notes: '字 (zì) is the courtesy name, traditionally given at age 20 during the capping ceremony. It was used by peers and in polite address. 恆 (constant, persevering) + 齋 (study, studio) suggests a scholarly, steadfast character.' },
+            { section: 'ancestry', chars: '姓鮑氏', translation: 'Of the Bao surname', notes: '姓 (xìng) introduces the family surname. 氏 (shì) is a formal suffix used in genealogical contexts. The Bao clan traces its origins to the ancient state of Bao in Shaanxi.' },
+            { section: 'ancestry', chars: '世篤', translation: 'For generations devoted [to this place]', notes: '世 (shì) means "generations." 篤 (dǔ) means "sincere" or "devoted." Together, 世篤 emphasizes the family\'s deep, longstanding roots in their homeland—a point of pride in Chinese genealogical tradition.' },
+            { section: 'ancestry', chars: '鄞南鄞塘鄉鮑家埭人', translation: 'A person of Baojiadai village, Nantang Township, southern Yin County', notes: '鄞 (Yín) County is now part of Ningbo, Zhejiang. 鄉 (xiāng) means township. 埭 (dài) means "embankment" or "dike"—common in Jiangnan place names reflecting the region\'s water-management heritage. 人 (rén) means "person of [this place]."' },
 
             // FAMILY BACKGROUND
-            { section: 'family_background', chars: '曾祖廷揚', translation: 'Great-grandfather Tingyang', notes: '曾祖 means great-grandfather.' },
-            { section: 'family_background', chars: '祖光華', translation: 'Grandfather Guanghua', notes: '光華 means "glory and splendor."' },
-            { section: 'family_background', chars: '父明昌', translation: 'Father Mingchang', notes: '明昌 means "bright and prosperous."' },
-            { section: 'family_background', chars: '母侯氏', translation: 'Mother, Madam Hou', notes: 'Women are recorded by their maiden surname plus 氏.' },
-            { section: 'family_background', chars: '兄弟二人', translation: 'Two brothers', notes: 'He had one sibling.' },
-            { section: 'family_background', chars: '公其長也', translation: 'He was the eldest', notes: '長 indicates senior position among siblings.' },
+            { section: 'family_background', chars: '曾祖廷揚', translation: 'Great-grandfather [named] Tingyang', notes: '曾祖 (zēngzǔ) means great-grandfather. Recording three generations of ancestors was standard in formal biographies, establishing the subject\'s lineage and social standing.' },
+            { section: 'family_background', chars: '祖光華', translation: 'Grandfather [named] Guanghua', notes: '祖 (zǔ) means grandfather. 光華 means "glory and splendor"—an auspicious name expressing hopes for the family\'s flourishing.' },
+            { section: 'family_background', chars: '父明昌', translation: 'Father [named] Mingchang', notes: '父 (fù) means father. 明昌 combines "bright" and "prosperous"—reflecting aspirations for success and virtue.' },
+            { section: 'family_background', chars: '母侯氏', translation: 'Mother, née Hou', notes: 'Women in traditional genealogies are identified by their maiden surname plus 氏 (shì, "clan"). Personal names of women were often not recorded in formal documents, reflecting their identity through their birth family.' },
+            { section: 'family_background', chars: '兄弟二人', translation: 'Two brothers [in the family]', notes: '兄弟 (xiōngdì) means brothers. The phrase indicates the total number of male siblings, including the subject himself.' },
+            { section: 'family_background', chars: '公其長也', translation: 'The gentleman was the eldest', notes: '長 (zhǎng) means eldest or senior. Being the eldest son carried significant responsibility for the family\'s welfare and ancestral rites. The classical particle 也 marks a declarative statement.' },
 
             // CHARACTER
-            { section: 'youth', chars: '自幼勤奮樸實', translation: 'From youth, diligent and honest', notes: '勤奮 and 樸實 are cardinal virtues in Chinese ethics.' },
-            { section: 'youth', chars: '循規蹈矩', translation: 'Following rules and walking the proper path', notes: 'A classical idiom meaning strictly law-abiding.' },
-            { section: 'youth', chars: '先喪母後喪父', translation: 'First lost his mother, then his father', notes: 'Records early loss of both parents.' },
-            { section: 'virtues', chars: '業候時殖貨', translation: 'In business, watched for opportunities', notes: '候時 means observing timing; 殖貨 means accumulating wealth.' },
-            { section: 'virtues', chars: '歲有奇贏', translation: 'Every year had surplus profits', notes: '奇贏 indicates profits beyond expectations.' },
-            { section: 'virtues', chars: '商場稱信義焉', translation: 'In the marketplace, praised for integrity', notes: '信義 was the highest praise for a merchant.' },
-            { section: 'virtues', chars: '奉耶穌教', translation: 'Followed Christianity', notes: 'Christianity spread in Ningbo through 19th century missionaries.' },
-            { section: 'virtues', chars: '愛人如己', translation: 'Loved others as himself', notes: 'The Golden Rule from Matthew 22:39.' },
-            { section: 'virtues', chars: '樂善好施', translation: 'Delighted in goodness and giving', notes: 'A classical phrase describing philanthropic character.' },
-            { section: 'virtues', chars: '老而不倦', translation: 'In old age, untiring', notes: 'His charitable work continued throughout life.' },
+            { section: 'youth', chars: '自幼勤奮樸實', translation: 'From youth, diligent and honest', notes: '自幼 (zìyòu) means "from childhood." 勤奮 (qínfèn, diligent) and 樸實 (pǔshí, simple and genuine) are cardinal Confucian virtues. This establishes his character was formed early, not merely a result of success.' },
+            { section: 'youth', chars: '循規蹈矩', translation: 'Following rules and walking the proper path', notes: 'A four-character idiom (成語) meaning to follow established norms strictly. 循 and 蹈 both mean "to follow"; 規 (compass) and 矩 (square) represent moral standards. The idiom suggests propriety without rigidity.' },
+            { section: 'youth', chars: '先喪母後喪父', translation: 'First lost his mother, then lost his father', notes: '喪 (sàng) is the formal term for losing a parent to death. Losing both parents young was considered a great hardship that tested character. This detail explains his early self-reliance and entry into trade.' },
+            { section: 'virtues', chars: '業候時殖貨', translation: 'In business, he watched for opportunities and grew his wealth', notes: '候時 (hòushí) means "observing the right timing"—a key merchant skill. 殖貨 (zhíhuò) means "to grow goods/wealth." The phrase presents commercial success as requiring wisdom and patience, not mere greed.' },
+            { section: 'virtues', chars: '歲有奇贏', translation: 'Every year yielded surplus profits', notes: '奇贏 (jīyíng) means unexpected or extraordinary profits. The character 奇 suggests profits beyond the ordinary—indicating both business acumen and perhaps divine blessing on his honest dealings.' },
+            { section: 'virtues', chars: '商場稱信義焉', translation: 'In the marketplace, he was praised for integrity', notes: '信義 (xìnyì) combines trustworthiness (信) and righteousness (義)—the highest praise for a merchant. In Confucian commercial ethics, profit gained through integrity was honorable; deceptive profit was shameful. 焉 is a classical sentence particle.' },
+            { section: 'virtues', chars: '奉耶穌教', translation: 'He followed the teachings of Jesus', notes: '奉 (fèng) means to follow or embrace reverently. 耶穌教 is the Chinese term for Christianity (literally "Jesus teaching"). Protestant missionaries were active in Ningbo from the 1840s. His conversion likely occurred during his years in Shanghai.' },
+            { section: 'virtues', chars: '愛人如己', translation: 'Loved others as himself', notes: 'A direct quote of the biblical commandment (Leviticus 19:18, Matthew 22:39). Its inclusion shows how Christian ethics were presented as compatible with Confucian benevolence (仁), bridging two moral traditions.' },
+            { section: 'virtues', chars: '樂善好施', translation: 'Delighted in goodness and loved to give', notes: 'A classical four-character phrase (成語) describing philanthropic character. 樂善 means "to take joy in virtue"; 好施 means "to love giving." This Confucian ideal of the virtuous wealthy man perfectly describes the Christian concept of cheerful giving.' },
+            { section: 'virtues', chars: '老而不倦', translation: 'In old age, still untiring', notes: '老而不倦 echoes Confucius\'s self-description. The Analerta 7.19 records him saying he was so dedicated he forgot to eat, so joyful he forgot worries, "不知老之將至" (unaware old age was approaching). This phrase presents the subject as tireless in virtue even into old age.' },
+            { section: 'virtues', chars: '在滬', translation: 'In Shanghai', notes: '滬 (Hù) is the classical abbreviation for Shanghai, derived from ancient fishing weirs. Many Ningbo merchants made their fortunes in Shanghai during its rapid growth as a treaty port.' },
+            { section: 'virtues', chars: '寧波同鄉會', translation: 'Ningbo Native-Place Association', notes: '同鄉會 (tóngxiānghuì) were mutual-aid organizations for migrants from the same region. The Ningbo association in Shanghai was among the most powerful, providing networking, dispute resolution, and charitable services.' },
+            { section: 'virtues', chars: '四明公所', translation: 'Siming Guildhall', notes: '四明 (Sìmíng) is an ancient name for Ningbo, from the Siming Mountains. 公所 (gōngsuǒ) were guildhalls that served as community centers, handling everything from business disputes to funeral arrangements for deceased members.' },
+            { section: 'virtues', chars: '四明醫院', translation: 'Siming Hospital', notes: 'A hospital serving the Ningbo community in Shanghai. Medical philanthropy was highly valued, as it demonstrated care for the physical welfare of one\'s fellow townsmen regardless of their ability to pay.' },
+            { section: 'virtues', chars: '青年會', translation: 'YMCA', notes: '青年會 is the Chinese name for the Young Men\'s Christian Association. Its presence here reflects the subject\'s Christian faith and the YMCA\'s significant role in early 20th century Chinese urban life, offering education and social services.' },
+            { section: 'virtues', chars: '等皆竭誠資助', translation: 'And other institutions, all sincerely supported', notes: '竭誠 (jiéchéng) means "with utmost sincerity"—emphasizing that his giving was wholehearted, not merely for show. 資助 (zīzhù) means financial support or sponsorship.' },
+            { section: 'virtues', chars: '在鄉興辦學校', translation: 'In his hometown, he established schools', notes: '在鄉 (zàixiāng) means "in one\'s home village." 興辦學校 (xīngbàn xuéxiào) means to found or establish schools. Funding education was among the highest Confucian virtues—it benefited the community and brought honor to the donor\'s name.' },
+            { section: 'virtues', chars: '修葺宗祠', translation: 'Repaired the ancestral temple', notes: '修葺 (xiūqì) means to repair or renovate. 宗祠 (zōngcí) is the clan\'s ancestral hall where tablets of ancestors were kept and rituals performed. Maintaining the ancestral hall demonstrated filial piety and commitment to the clan.' },
+            { section: 'virtues', chars: '雖數千金不少吝', translation: 'Though it cost thousands in gold, he did not stint at all', notes: '數千金 (shù qiānjīn) means "several thousand in gold"—a substantial fortune. 不少吝 (bù shǎo lìn) means "not the least bit stingy." This emphasizes that his generosity was wholehearted, not reluctant.' },
+            { section: 'virtues', chars: '蓋古鄉里之善人', translation: 'Truly a virtuous man of the old village tradition', notes: '蓋 (gài) is an emphatic particle meaning "truly" or "indeed." 古鄉里 refers to the traditional village community. 善人 (shànrén) means a virtuous or good person—one who embodies Confucian ideals of benevolence and community service.' },
+            { section: 'virtues', chars: '今宗教之信徒也無愧焉', translation: 'And a blameless follower of the modern faith', notes: '今宗教 (jīn zōngjiào) means "modern religion"—i.e., Christianity. 信徒 (xìntú) means believer or follower. 無愧 (wúkuì) means "without shame." This remarkable passage harmonizes Confucian and Christian ethics, presenting them as complementary virtues.' },
 
             // OCCUPATION
-            { section: 'occupation', chars: '年十三即棄書而賈', translation: 'At thirteen, left study for trade', notes: 'Left school to enter commerce.' },
-            { section: 'occupation', chars: '就業於鄉之京蘇雜貨肆', translation: 'Worked at the village sundries shop', notes: '京蘇雜貨 refers to goods from the Beijing-Suzhou trade.' },
-            { section: 'occupation', chars: '兼售首飾緞匹', translation: 'Also sold jewelry and silk', notes: 'Higher-value goods.' },
-            { section: 'occupation', chars: '既不得志', translation: 'Not finding success there', notes: 'His early career was not profitable.' },
-            { section: 'occupation', chars: '則駕釣船捕魚江浙海中', translation: 'Piloted a fishing boat in the Jiangsu-Zhejiang seas', notes: 'Turned to fishing along the coast.' },
-            { section: 'occupation', chars: '年三十始客上海', translation: 'At thirty, began sojourning in Shanghai', notes: '客 indicates living away from hometown.' },
-            { section: 'occupation', chars: '營衣業', translation: 'Operated a clothing business', notes: 'Entered the garment trade.' },
-            { section: 'occupation', chars: '旋經理煤號', translation: 'Soon managed a coal firm', notes: 'Coal was important in industrializing Shanghai.' },
-            { section: 'occupation', chars: '自是終身一業', translation: 'From then, his lifelong occupation', notes: 'Found his career in coal trade.' },
+            { section: 'occupation', chars: '年十三即棄書而賈', translation: 'At age thirteen, he immediately left study for trade', notes: '棄書 (qìshū) means "abandoning books"—leaving formal education. 而賈 (ér gǔ) means "and became a merchant." Entering trade at 13 was common for families of modest means. The character 即 (jí, immediately) suggests necessity rather than choice.' },
+            { section: 'occupation', chars: '就業於鄉之京蘇雜貨肆', translation: 'Took employment at the village\'s Beijing-Suzhou sundries shop', notes: '京蘇雜貨 refers to goods traded between Beijing and Suzhou—a major commercial route. 肆 (sì) is a classical word for shop. Such shops sold everything from daily necessities to small luxuries.' },
+            { section: 'occupation', chars: '兼售首飾緞匹', translation: 'Also sold jewelry and silk fabrics', notes: '兼 (jiān) means "additionally." 首飾 (shǒushi) is jewelry; 緞匹 (duànpǐ) refers to bolts of satin. These higher-value goods suggest the shop served customers with some means.' },
+            { section: 'occupation', chars: '既不得志', translation: 'Not finding success there', notes: '不得志 (bù dé zhì) is a classical expression meaning "unable to achieve one\'s ambitions." This honest admission of early failure makes his later success more impressive and his character more admirable.' },
+            { section: 'occupation', chars: '則駕釣船捕魚江浙海中', translation: 'He then piloted a fishing boat, catching fish in the Jiangsu-Zhejiang seas', notes: '駕 (jià) means to pilot or drive. 江浙海中 refers to the coastal waters between Jiangsu and Zhejiang provinces. This dramatic career change from shopkeeper to fisherman shows his willingness to do hard physical labor.' },
+            { section: 'occupation', chars: '年三十始客上海', translation: 'At age thirty, he first sojourned in Shanghai', notes: '客 (kè) means "to sojourn" or "to be a guest"—implying residence away from one\'s hometown. Shanghai in the late 19th century was booming as a treaty port, attracting ambitious migrants from across China.' },
+            { section: 'occupation', chars: '營衣業', translation: 'Operated a clothing business', notes: '營 (yíng) means to manage or operate. 衣業 (yīyè) is the clothing trade. The Ningbo merchant community in Shanghai was particularly strong in textiles and tailoring.' },
+            { section: 'occupation', chars: '旋經理煤號', translation: 'Soon afterward managed a coal firm', notes: '旋 (xuán) means "soon" or "before long." 煤號 (méihào) is a coal trading company. Coal was essential fuel for Shanghai\'s growing industries and foreign steamships—a lucrative trade.' },
+            { section: 'occupation', chars: '自是終身一業', translation: 'From then on, this was his lifelong occupation', notes: '自是 (zìshì) means "from this point on." 終身一業 emphasizes that he found his calling in the coal trade and remained devoted to it. Stability in one trade was considered virtuous, not limiting.' },
 
             // FAMILY
-            { section: 'family', chars: '元配陳氏前卒', translation: 'First wife Madam Chen predeceased him', notes: '元配 means first wife.' },
-            { section: 'family', chars: '繼配崔氏', translation: 'Second wife Madam Cui', notes: '繼配 means second wife.' },
-            { section: 'family', chars: '子三', translation: 'Three sons', notes: 'Male heirs for continuing the family line.' },
-            { section: 'family', chars: '女四人', translation: 'Four daughters', notes: 'Daughters listed with less detail.' },
-            { section: 'family', chars: '孫四人正鵠正鵬正鴻正鶴', translation: 'Four grandsons: Zhenghu, Zhengpeng, Zhenghong, Zhenghe', notes: 'All share generation name 正. Second characters are birds.' },
+            { section: 'family', chars: '元配陳氏前卒', translation: 'His first wife, née Chen, predeceased him', notes: '元配 (yuánpèi) means "original/first wife." 前卒 (qiánzú) means "died before [him]." Women are identified by their maiden surname plus 氏 (shì). The loss of his first wife necessitated remarriage to maintain the household.' },
+            { section: 'family', chars: '繼配崔氏', translation: 'His second wife, née Cui', notes: '繼配 (jìpèi) means "succeeding wife" or "second wife." Remarriage after a wife\'s death was expected for men, especially those needing heirs. 崔 (Cuī) was her maiden surname.' },
+            { section: 'family', chars: '子三', translation: 'Three sons', notes: '子 (zǐ) means son. Recording the number of male heirs was essential, as sons continued the family line and performed ancestral rites. The number three was considered auspicious.' },
+            { section: 'family', chars: '長咸鈞陳出先逝', translation: 'The eldest, Xianjun, born of [Madam] Chen, died before [his father]', notes: '長 indicates the eldest son. 陳出 means "born of the Chen wife." 先逝 (died first) indicates he predeceased his father—a great sorrow in Chinese culture, as a son should outlive his parents to care for them.' },
+            { section: 'family', chars: '次咸鏘三咸龢皆崔出', translation: 'The second, Xianqiang, and the third, Xianhe—both born of [Madam] Cui', notes: '次 means second in birth order; 三 means third. 咸 (xián) is the shared generation name. 皆崔出 clarifies that these two sons were born of the second wife, Madam Cui.' },
+            { section: 'family', chars: '女四人', translation: 'Four daughters', notes: '女 (nǚ) means daughter. In traditional genealogies, daughters were recorded but with less detail than sons, as they would marry out and join their husbands\' families. Four was a respectable number.' },
+            { section: 'family', chars: '適余頌威', translation: '[First daughter] married Yu Songwei', notes: '適 (shì) is the classical term for a woman marrying into another family, as opposed to 娶 (qǔ) for a man taking a wife. 余 (Yú) is the husband\'s surname; 頌威 (Sòngwēi, "Praising Prestige") is his given name.' },
+            { section: 'family', chars: '陸鳳石', translation: '[Second daughter married] Lu Fengshi', notes: 'The verb 適 is implied from context. 陸 (Lù) is a common surname; 鳳石 (Fèngshí, "Phoenix Stone") is an elegant given name combining auspicious imagery.' },
+            { section: 'family', chars: '三四待字', translation: 'The third and fourth [daughters] are awaiting marriage', notes: '待字 (dàizì) literally means "awaiting the character"—an elegant classical expression for unmarried young women. It refers to the courtesy name a woman would receive at marriage, symbolizing her new identity in her husband\'s family.' },
+            { section: 'family', chars: '孫四人正鵠正鵬正鴻正鶴', translation: 'Four grandsons: Zhenghu, Zhengpeng, Zhenghong, Zhenghe', notes: 'All grandsons share the generation name 正 (zhèng, "upright/correct"). Their second characters are all auspicious birds: 鵠 (hú, swan), 鵬 (péng, mythical roc), 鴻 (hóng, wild goose), 鶴 (hè, crane)—symbolizing lofty aspirations and longevity.' },
+            { section: 'family', chars: '公生', translation: 'The gentleman was born...', notes: 'This transitional phrase links the family section to the birth/death dates. 公 (gōng) is the honorific used throughout the document for the deceased subject.' },
 
             // DEATH
-            { section: 'death', chars: '於前清同治四年乙丑九月二十七日', translation: 'Born on the 27th of the 9th month, Tongzhi 4 (1865)', notes: 'Tongzhi 4 = 1865. 前清 indicates written after 1911 revolution.' },
+            { section: 'death', chars: '於前清同治四年乙丑九月二十七日', translation: 'On the 27th day of the 9th month of Tongzhi 4, yichou year [October 1865]', notes: '前清 (former Qing) indicates this was written after the 1911 revolution that ended the dynasty. 同治 was the reign of the Tongzhi Emperor (r. 1861-1875). 乙丑 is the sexagenary cycle year designation.' },
+            { section: 'death', chars: '歲甲子年正六十', translation: 'At the age of jiazi, exactly sixty years old', notes: '甲子 (jiazi) is both the first year in the 60-year cycle AND a term for completing 60 years—a full cycle of life. Reaching 60 was a major milestone celebrated as 還曆 (returning calendar).' },
+            { section: 'death', chars: '一月營生壙於天', translation: 'In the first month, [he] prepared his burial site at Tian[feng Mountain]', notes: '營生壙 means to prepare one\'s tomb while still alive—a common practice among the wealthy to ensure proper burial. The text transitions here to describing the tomb\'s location.' },
 
             // BURIAL
-            { section: 'burial', chars: '鳳山麓', translation: 'At the foot of Phoenix Mountain', notes: '鳳山 is an auspicious name. 麓 means foot of mountain.' },
-            { section: 'burial', chars: '墓向坐', translation: 'The tomb sits facing...', notes: 'Introduces feng shui orientation.' },
-            { section: 'burial', chars: '山環水抱', translation: 'Mountains encircle, water embraces', notes: 'Ideal feng shui configuration.' },
-            { section: 'burial', chars: '當蔭其嗣人', translation: 'Shall bless his descendants', notes: '蔭 means ancestral blessing extending to future generations.' },
-            { section: 'burial', chars: '天鳳之山形勢飛翔', translation: 'Tianfeng Mountain resembles a phoenix soaring', notes: 'The mountain\'s shape likened to a flying phoenix.' },
-            { section: 'burial', chars: '華采翼翼', translation: 'With splendid plumage flapping', notes: '翼翼 (reduplicated) emphasizes continuous motion.' },
-            { section: 'burial', chars: '和鳴鏘鏘', translation: 'Singing in harmony with a ring', notes: '鏘鏘 is onomatopoeia for the phoenix\'s cry.' },
-            { section: 'burial', chars: '卜吉於此', translation: 'Divined this spot as auspicious', notes: 'A geomancer selected this site.' },
-            { section: 'burial', chars: '子孫繁昌', translation: 'Descendants will flourish', notes: 'The promised benefit of auspicious burial.' },
-            { section: 'burial', chars: '百歲之後其', translation: 'After a hundred years, he...', notes: '百歲之後 is a euphemism for death.' },
-            { section: 'burial', chars: '歸其藏', translation: 'Shall return to his resting place', notes: '藏 means burial place. Promises peaceful eternal rest.' },
+            { section: 'burial', chars: '鳳山麓', translation: 'At the foot of Phoenix Mountain', notes: '鳳山 (Fèngshān, Phoenix Mountain) is an extremely auspicious name for a burial site. 麓 (lù) means the foot or base of a mountain—a favored location in feng shui, sheltered yet accessible.' },
+            { section: 'burial', chars: '墓向坐', translation: 'The tomb sits facing...', notes: 'This introduces the feng shui orientation. 向 (xiàng) is the direction the tomb faces; 坐 (zuò) is the direction its back faces. Proper orientation was crucial for channeling beneficial qi.' },
+            { section: 'burial', chars: '向', translation: '[Facing direction]', notes: 'Part of the compass orientation. 向 (xiàng) indicates the direction the tomb faces. The specific direction character would follow.' },
+            { section: 'burial', chars: '兼', translation: '[Combined with]', notes: '兼 (jiān) in feng shui compass readings means "combined with" or "also including." It indicates a compound direction—the tomb faces primarily one direction but includes aspects of an adjacent direction on the compass.' },
+            { section: 'burial', chars: '山環水抱', translation: 'Mountains encircle, water embraces', notes: 'The ideal feng shui configuration: mountains behind for protection, water in front for gathering wealth and qi. This four-character phrase describes the "armchair" formation prized by geomancers.' },
+            { section: 'burial', chars: '當蔭其嗣人', translation: 'Shall bestow blessings upon his descendants', notes: '蔭 (yìn) means shade or protection—here metaphorically, the blessings ancestors extend to descendants. The belief that proper burial benefits future generations was central to feng shui practice.' },
+            { section: 'burial', chars: '天鳳之山形勢飛翔', translation: 'Tianfeng Mountain has the form and momentum of a phoenix in flight', notes: '天鳳 (Tiānfèng, Heavenly Phoenix) is the mountain\'s name. 形勢 (xíngshì) means form and momentum—key feng shui concepts. A site resembling a phoenix in flight was considered supremely auspicious.' },
+            { section: 'burial', chars: '華采翼翼', translation: 'With magnificent plumage, wings spread wide', notes: '華采 (huácǎi) means splendid colors or plumage. 翼翼 (yìyì) is a reduplicated form meaning "with wings spread" or "flapping continuously"—creating vivid imagery of the phoenix taking flight.' },
+            { section: 'burial', chars: '和鳴鏘鏘', translation: 'Singing harmoniously, ringing clear', notes: '和鳴 (hémíng) means harmonious calls. 鏘鏘 (qiāngqiāng) is onomatopoeia for the ringing cry of the phoenix—a sound said to bring peace and prosperity.' },
+            { section: 'burial', chars: '卜吉於此', translation: 'This spot was divined as auspicious', notes: '卜 (bǔ) means to divine or consult oracles. 吉 (jí) means auspicious. A professional geomancer (風水師) would have been consulted to select this propitious site.' },
+            { section: 'burial', chars: '子孫繁昌', translation: 'His descendants shall flourish', notes: '繁昌 (fánchāng) means to flourish abundantly. This is the promised benefit of auspicious burial—the ancestor\'s favorable resting place will bring prosperity to future generations.' },
+            { section: 'burial', chars: '百歲之後其', translation: 'After a hundred years, he shall...', notes: '百歲之後 (bǎisuì zhī hòu) is a elegant euphemism for death, literally "after a hundred years." Chinese culture avoided direct references to death, preferring such circumlocutions.' },
+            { section: 'burial', chars: '歸其藏', translation: 'Return to his final resting place', notes: '歸 (guī) means to return home. 藏 (zàng) means burial place or to be interred. The phrase suggests death as a homecoming, a peaceful return to the earth.' },
 
             // CREDIT
-            { section: 'credit', chars: '同邑張美翊撰文', translation: 'Text by Zhang Meiyi of the same district', notes: 'Zhang Meiyi (1856-1924) was a distinguished Ningbo scholar.' },
-            { section: 'credit', chars: '書丹', translation: 'Written in cinnabar', notes: 'Credits the calligrapher who wrote in red ink for carving.' }
+            { section: 'credit', chars: '同邑張美翊撰文', translation: 'Text composed by Zhang Meiyi of the same district', notes: '同邑 (tóngyì) means "from the same county." 張美翊 (Zhāng Měiyì, 1856-1924) was a distinguished Ningbo scholar and calligrapher. 撰文 (zhuànwén) means to compose the text.' },
+            { section: 'credit', chars: '書丹', translation: 'Written in cinnabar', notes: '書丹 (shūdān) means to write in red cinnabar ink. This was the traditional method for preparing text for stone carving—the calligrapher wrote the characters in red ink directly on the stone, then carvers followed the lines.' }
         ];
 
         // Character dictionary
@@ -833,27 +872,29 @@
             const charEl = event.target;
 
             if (isLocked) {
-                // Unlock
-                isLocked = false;
-                document.querySelectorAll('.char.locked').forEach(el => el.classList.remove('locked'));
-                currentCharEl = null;
+                unlock();
             } else {
                 // Lock to this character
                 isLocked = true;
                 charEl.classList.add('locked');
                 currentCharEl = charEl;
+                document.getElementById('lockIcon').style.display = 'block';
                 updateDisplay(charEl);
             }
         }
 
         function handleDocumentClick(event) {
             if (event.target.classList.contains('char')) return;
-
             if (isLocked) {
-                isLocked = false;
-                document.querySelectorAll('.char.locked').forEach(el => el.classList.remove('locked'));
-                currentCharEl = null;
+                unlock();
             }
+        }
+
+        function unlock() {
+            isLocked = false;
+            document.querySelectorAll('.char.locked').forEach(el => el.classList.remove('locked'));
+            document.getElementById('lockIcon').style.display = 'none';
+            currentCharEl = null;
         }
 
         function updateDisplay(charEl) {
@@ -1045,6 +1086,12 @@
             updateOpacity(slider.value);
 
             document.getElementById('documentContainer').addEventListener('click', handleDocumentClick);
+
+            // Lock icon click handler
+            document.getElementById('lockIcon').addEventListener('click', (e) => {
+                e.stopPropagation();
+                unlock();
+            });
 
             // Initialize with first character
             const firstChar = document.querySelector('.char');

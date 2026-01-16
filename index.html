@@ -788,33 +788,49 @@
             '鶴': { pinyin: 'hè', meaning: 'Crane', context: 'Grandson\'s name.' }
         };
 
-        // Layout data - EXACT POSITIONS FROM ORIGINAL COMMIT ecf7514
+        // Layout data - reordered: title, credits, main body, spine, feng shui
+        // X offsets adjusted to preserve exact visual positions
         const textLayout = [
+            // 1. TITLE (rightmost, 1 column)
             { type: 'title', section: 'title', chars: '鮑公恆齋生壙志', x: -20, y: 9, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'ancestry', chars: '公名哲泰字恆齋姓鮑氏', x: -79, y: 9, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'ancestry', chars: '世篤鄞南鄞塘鄉鮑家埭人', x: -54, y: 200, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'family_background', chars: '曾祖廷揚祖光華父', x: -27, y: 412, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'family_background', chars: '明昌母侯氏兄弟二人公其長也', x: -30, y: 9, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'youth', chars: '自幼勤奮樸實循規蹈矩先喪母後喪父', x: -4, y: 258, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'occupation', chars: '年十三即棄書而賈就業於鄉之京蘇雜貨肆兼售首飾緞匹既不得志則', x: -7, y: 9, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'occupation', chars: '駕釣船捕魚江浙海中年三十始客上海營衣業旋經理煤號自是終身一', x: -10, y: 9, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'virtues', chars: '業候時殖貨歲有奇贏商場稱信義焉奉耶穌教愛人如己樂善好施老而', x: -14, y: 9, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'virtues', chars: '不倦在滬如寧波同鄉會四明公所四明醫院青年會等皆竭誠資助在鄉', x: -18, y: 9, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'virtues', chars: '興辦學校修葺宗祠雖數千金不少吝蓋古鄉里之善人今宗教之信徒公', x: -22, y: 9, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'family', chars: '無愧焉元配陳氏前卒繼配崔氏子三長咸鈞陳出先逝次咸鏘三咸龢皆', x: -26, y: 9, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'family', chars: '崔出女四人適余頌威陸鳳石三四待字孫四人正鵠正鵬正鴻正鶴公生', x: -29, y: 9, size: 16, spacing: 1.14 },
-            { type: 'text', section: 'death', chars: '於前清同治四年乙丑九月二十七日歲甲子年正六十　月營生壙於天', x: -34, y: 9, size: 16, spacing: 1.14 },
-            { type: 'credit', section: 'credit', chars: '同邑張美翊撰文', x: 324, y: 357, size: 16, spacing: 1.14 },
-            { type: 'credit', section: 'credit', chars: '書丹', x: 321, y: 451, size: 16, spacing: 1.14 },
+
+            // 2. CREDITS (2 columns)
+            { type: 'credit', section: 'credit', chars: '同邑張美翊撰文', x: 116, y: 357, size: 16, spacing: 1.14 },
+            { type: 'credit', section: 'credit', chars: '書丹', x: 113, y: 451, size: 16, spacing: 1.14 },
+
+            // 3. MAIN BODY (10 logical columns, some split across segments)
+            // Column 1: ancestry (3 segments in same visual column)
+            { type: 'text', section: 'ancestry', chars: '公名哲泰字恆齋姓鮑氏', x: -47, y: 9, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'ancestry', chars: '世篤鄞南鄞塘鄉鮑家埭人', x: -22, y: 200, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'family_background', chars: '曾祖廷揚祖光華父', x: 5, y: 412, size: 16, spacing: 1.14 },
+            // Column 2: family background + youth (2 segments)
+            { type: 'text', section: 'family_background', chars: '明昌母侯氏兄弟二人公其長也', x: 2, y: 9, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'youth', chars: '自幼勤奮樸實循規蹈矩先喪母後喪父', x: 28, y: 258, size: 16, spacing: 1.14 },
+            // Columns 3-10: full columns
+            { type: 'text', section: 'occupation', chars: '年十三即棄書而賈就業於鄉之京蘇雜貨肆兼售首飾緞匹既不得志則', x: 25, y: 9, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'occupation', chars: '駕釣船捕魚江浙海中年三十始客上海營衣業旋經理煤號自是終身一', x: 22, y: 9, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'virtues', chars: '業候時殖貨歲有奇贏商場稱信義焉奉耶穌教愛人如己樂善好施老而', x: 18, y: 9, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'virtues', chars: '不倦在滬如寧波同鄉會四明公所四明醫院青年會等皆竭誠資助在鄉', x: 14, y: 9, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'virtues', chars: '興辦學校修葺宗祠雖數千金不少吝蓋古鄉里之善人今宗教之信徒公', x: 10, y: 9, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'family', chars: '無愧焉元配陳氏前卒繼配崔氏子三長咸鈞陳出先逝次咸鏘三咸龢皆', x: 6, y: 9, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'family', chars: '崔出女四人適余頌威陸鳳石三四待字孫四人正鵠正鵬正鴻正鶴公生', x: 3, y: 9, size: 16, spacing: 1.14 },
+            { type: 'text', section: 'death', chars: '於前清同治四年乙丑九月二十七日歲甲子年正六十　月營生壙於天', x: -2, y: 9, size: 16, spacing: 1.14 },
+
+            // 4. SPINE (1 logical column, 4 segments with preserved positions)
             { type: 'spine', section: 'spine', chars: '句俞鮑氏宗譜', x: 14, y: 5, size: 28, spacing: 0.80 },
             { type: 'spine', section: 'spine', chars: '卷六', x: 51, y: 167, size: 28, spacing: 0.80 },
             { type: 'spine', section: 'spine', chars: '生壙志', x: 95, y: 245, size: 13, spacing: 1.18 },
             { type: 'spine', section: 'spine', chars: '正始堂', x: 112, y: 499, size: 27, spacing: 0.85 },
+
+            // 5. FENG SHUI (3 logical columns)
+            // Column 1: fragmented with gaps (4 segments)
             { type: 'text', section: 'burial', chars: '鳳山麓墓向坐', x: 104, y: 9, size: 16, spacing: 1.14 },
             { type: 'text', section: 'burial', chars: '向', x: 130, y: 142, size: 16, spacing: 1.14 },
             { type: 'text', section: 'burial', chars: '兼', x: 158, y: 180, size: 16, spacing: 1.14 },
             { type: 'text', section: 'burial', chars: '山環水抱當蔭其嗣人', x: 182, y: 237, size: 16, spacing: 1.14 },
+            // Column 2: full column
             { type: 'text', section: 'burial', chars: '天鳳之山形勢飛翔華采翼翼和鳴鏘鏘卜吉於此子孫繁昌百歲之後其', x: 179, y: 9, size: 16, spacing: 1.14 },
+            // Column 3: short column
             { type: 'text', section: 'burial', chars: '歸其藏', x: 176, y: 9, size: 16, spacing: 1.14 }
         ];
 

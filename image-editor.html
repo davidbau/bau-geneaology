@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Image Stitcher</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00d9ff;
+        }
+
+        .toolbar {
+            background: #16213e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 5px 15px;
+            border-right: 1px solid #333;
+        }
+
+        .toolbar-group:last-child {
+            border-right: none;
+        }
+
+        .toolbar-group label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        button {
+            background: #0f3460;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #1a5490;
+        }
+
+        button.active {
+            background: #00d9ff;
+            color: #000;
+        }
+
+        button.danger {
+            background: #e94560;
+        }
+
+        button.danger:hover {
+            background: #ff6b6b;
+        }
+
+        button.success {
+            background: #00b894;
+        }
+
+        button.success:hover {
+            background: #00cec9;
+        }
+
+        input[type="range"] {
+            width: 100px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .workspace {
+            display: flex;
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        .panel {
+            background: #16213e;
+            border-radius: 8px;
+            padding: 15px;
+            flex: 1;
+        }
+
+        .panel h3 {
+            margin-bottom: 10px;
+            color: #00d9ff;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .canvas-container {
+            position: relative;
+            background: #0a0a15;
+            border-radius: 4px;
+            overflow: visible;
+            min-height: 500px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 600px;
+        }
+
+        .control-handle {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #00d9ff;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            cursor: move;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        .control-handle:hover {
+            background: #ff6b6b;
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        .control-handle.corner {
+            width: 20px;
+            height: 20px;
+            background: #ff6b6b;
+        }
+
+        .control-handle.edge {
+            width: 14px;
+            height: 14px;
+            background: #00ff88;
+        }
+
+        .control-handle.grid {
+            width: 12px;
+            height: 12px;
+            background: #ffaa00;
+        }
+
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-group label {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .control-group input[type="range"] {
+            width: 120px;
+        }
+
+        .output-panel {
+            flex: 1.5;
+        }
+
+        #outputCanvas {
+            max-width: 100%;
+            max-height: 600px;
+            cursor: grab;
+        }
+
+        #outputCanvas:active {
+            cursor: grabbing;
+        }
+
+        .stitch-controls {
+            margin-top: 15px;
+            padding: 15px;
+            background: #0a0a15;
+            border-radius: 4px;
+        }
+
+        .stitch-controls h4 {
+            margin-bottom: 10px;
+            color: #888;
+        }
+
+        .position-inputs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .position-inputs input {
+            width: 100%;
+            padding: 5px;
+            background: #16213e;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .instructions {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .instructions h4 {
+            color: #00d9ff;
+            margin-bottom: 10px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .drop-zone {
+            border: 2px dashed #333;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #00d9ff;
+            color: #00d9ff;
+        }
+
+        .image-loaded .drop-zone {
+            display: none;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            background: #0a0a15;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .tab.active {
+            background: #16213e;
+            color: #00d9ff;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .status-bar {
+            background: #0a0a15;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Document Image Stitcher</h1>
+
+        <div class="instructions">
+            <h4>How to use:</h4>
+            <ol>
+                <li><strong>Load images:</strong> Click on each panel to load images (or they auto-load from sources/)</li>
+                <li><strong>Adjust grid:</strong> Drag the corner/edge/grid handles to correct perspective and wrinkle distortion</li>
+                <li><strong>Rotate:</strong> Use rotation controls to align the images</li>
+                <li><strong>Adjust:</strong> Use brightness/contrast/threshold sliders to clean up the image</li>
+                <li><strong>Position:</strong> Use Img2 Left/Right buttons or drag images in output panel</li>
+                <li><strong>Export:</strong> Click "Download Result" to save the final stitched image</li>
+            </ol>
+            <p style="margin-top:10px;color:#ff6b6b;"><strong>Tip:</strong> For full mesh warp functionality, serve via HTTP: <code>python3 -m http.server 8000</code> then open <code>http://localhost:8000/image-editor.html</code></p>
+        </div>
+
+        <div class="toolbar">
+            <div class="toolbar-group">
+                <label>Mode:</label>
+                <button id="modeGrid" class="active">Adjust Grid</button>
+                <button id="modePosition">Position Images</button>
+            </div>
+            <div class="toolbar-group">
+                <label>Grid:</label>
+                <select id="gridSize">
+                    <option value="2" selected>2x2 (corners)</option>
+                    <option value="3">3x3</option>
+                    <option value="4">4x4</option>
+                    <option value="5">5x5</option>
+                </select>
+            </div>
+            <div class="toolbar-group">
+                <label>Image 1:</label>
+                <button id="rotate1CCW">Rotate -90°</button>
+                <button id="rotate1CW">Rotate +90°</button>
+                <button id="apply1">Apply Transform</button>
+            </div>
+            <div class="toolbar-group">
+                <label>Image 2:</label>
+                <button id="rotate2CCW">Rotate -90°</button>
+                <button id="rotate2CW">Rotate +90°</button>
+                <button id="apply2">Apply Transform</button>
+            </div>
+            <div class="toolbar-group">
+                <label>Output:</label>
+                <button id="updateStitch" class="success">Update Stitch</button>
+                <button id="downloadBtn" class="success">Download Result</button>
+            </div>
+            <div class="toolbar-group">
+                <button id="resetBtn" class="danger">Reset All</button>
+            </div>
+        </div>
+
+        <div class="workspace">
+            <!-- Image 1 Panel -->
+            <div class="panel" id="panel1">
+                <h3>Image 1 (Main Page)</h3>
+                <div class="canvas-container" id="container1">
+                    <div class="drop-zone" id="dropZone1">
+                        <p>Click or drop IMG_4936.jpeg here</p>
+                        <input type="file" id="fileInput1" accept="image/*">
+                    </div>
+                    <canvas id="canvas1"></canvas>
+                </div>
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Brightness</label>
+                        <input type="range" id="brightness1" min="-100" max="100" value="0">
+                    </div>
+                    <div class="control-group">
+                        <label>Contrast</label>
+                        <input type="range" id="contrast1" min="0.5" max="2" step="0.1" value="1">
+                    </div>
+                    <div class="control-group">
+                        <label>Threshold</label>
+                        <input type="range" id="threshold1" min="0" max="255" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image 2 Panel -->
+            <div class="panel" id="panel2">
+                <h3>Image 2 (Spine/Continuation)</h3>
+                <div class="canvas-container" id="container2">
+                    <div class="drop-zone" id="dropZone2">
+                        <p>Click or drop IMG_4937.jpeg here</p>
+                        <input type="file" id="fileInput2" accept="image/*">
+                    </div>
+                    <canvas id="canvas2"></canvas>
+                </div>
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Brightness</label>
+                        <input type="range" id="brightness2" min="-100" max="100" value="0">
+                    </div>
+                    <div class="control-group">
+                        <label>Contrast</label>
+                        <input type="range" id="contrast2" min="0.5" max="2" step="0.1" value="1">
+                    </div>
+                    <div class="control-group">
+                        <label>Threshold</label>
+                        <input type="range" id="threshold2" min="0" max="255" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="panel output-panel">
+                <h3>Stitched Output</h3>
+                <div class="canvas-container">
+                    <canvas id="outputCanvas"></canvas>
+                </div>
+                <div class="stitch-controls">
+                    <h4>Position Controls</h4>
+                    <div class="position-inputs">
+                        <div class="control-group">
+                            <label>Image 1 X</label>
+                            <input type="number" id="img1X" value="0">
+                        </div>
+                        <div class="control-group">
+                            <label>Image 1 Y</label>
+                            <input type="number" id="img1Y" value="0">
+                        </div>
+                        <div class="control-group">
+                            <label>Image 2 X</label>
+                            <input type="number" id="img2X" value="0">
+                        </div>
+                        <div class="control-group">
+                            <label>Image 2 Y</label>
+                            <input type="number" id="img2Y" value="0">
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <button id="alignTop">Align Top</button>
+                        <button id="alignBottom">Align Bottom</button>
+                        <button id="snapSpine">Snap Spines</button>
+                        <button id="img2Left">Img2 Left</button>
+                        <button id="img2Right">Img2 Right</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar" id="statusBar">Ready. Load images to begin.</div>
+    </div>
+
+    <script>
+        // State
+        const state = {
+            images: [null, null],
+            originalImages: [null, null],
+            grids: [null, null],  // 2D array of control points
+            gridSize: 2,  // NxN grid (2x2 = corners only by default)
+            transforms: [
+                { rotation: 0, brightness: 0, contrast: 1, threshold: 0 },
+                { rotation: 0, brightness: 0, contrast: 1, threshold: 0 }
+            ],
+            positions: [{ x: 0, y: 0 }, { x: 0, y: 0 }],
+            processedImages: [null, null],
+            mode: 'grid',
+            dragging: null,
+            dragStart: null,
+            hasAutoPositioned: false  // Only auto-position once on first load
+        };
+
+        // DOM Elements
+        const canvases = [
+            document.getElementById('canvas1'),
+            document.getElementById('canvas2')
+        ];
+        const contexts = canvases.map(c => c.getContext('2d'));
+        const outputCanvas = document.getElementById('outputCanvas');
+        const outputCtx = outputCanvas.getContext('2d');
+        const containers = [
+            document.getElementById('container1'),
+            document.getElementById('container2')
+        ];
+
+        // Initialize grid of control points
+        // Preserves corner positions if grid already exists, interpolates intermediate points
+        function initGrid(index, gridSize) {
+            const img = state.images[index];
+            if (!img) return;
+
+            const oldGrid = state.grids[index];
+
+            // Save corner positions from old grid if it exists
+            let corners = null;
+            if (oldGrid && oldGrid.length >= 2) {
+                const oldRows = oldGrid.length;
+                const oldCols = oldGrid[0].length;
+                corners = {
+                    topLeft: oldGrid[0][0],
+                    topRight: oldGrid[0][oldCols - 1],
+                    bottomLeft: oldGrid[oldRows - 1][0],
+                    bottomRight: oldGrid[oldRows - 1][oldCols - 1]
+                };
+            }
+
+            const grid = [];
+            for (let row = 0; row < gridSize; row++) {
+                const rowPoints = [];
+                for (let col = 0; col < gridSize; col++) {
+                    // Default: uniform grid based on image dimensions
+                    let x = (col / (gridSize - 1)) * img.width;
+                    let y = (row / (gridSize - 1)) * img.height;
+
+                    // If we have old corners, interpolate based on them
+                    if (corners) {
+                        const u = col / (gridSize - 1);  // 0 to 1 across columns
+                        const v = row / (gridSize - 1);  // 0 to 1 across rows
+
+                        // Bilinear interpolation from corners
+                        const top = {
+                            x: corners.topLeft.x * (1 - u) + corners.topRight.x * u,
+                            y: corners.topLeft.y * (1 - u) + corners.topRight.y * u
+                        };
+                        const bottom = {
+                            x: corners.bottomLeft.x * (1 - u) + corners.bottomRight.x * u,
+                            y: corners.bottomLeft.y * (1 - u) + corners.bottomRight.y * u
+                        };
+                        x = top.x * (1 - v) + bottom.x * v;
+                        y = top.y * (1 - v) + bottom.y * v;
+                    }
+
+                    rowPoints.push({ x, y });
+                }
+                grid.push(rowPoints);
+            }
+            state.grids[index] = grid;
+        }
+
+        // Initialize
+        function init() {
+            setupFileInputs();
+            setupControls();
+            setupOutputInteraction();
+            updateStatus('Ready. Load images to begin.');
+        }
+
+        function setupFileInputs() {
+            for (let i = 0; i < 2; i++) {
+                const dropZone = document.getElementById(`dropZone${i + 1}`);
+                const fileInput = document.getElementById(`fileInput${i + 1}`);
+
+                dropZone.addEventListener('click', () => fileInput.click());
+
+                dropZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('dragover');
+                });
+
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.classList.remove('dragover');
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('dragover');
+                    const file = e.dataTransfer.files[0];
+                    if (file) loadImage(i, file);
+                });
+
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) loadImage(i, file);
+                });
+            }
+        }
+
+        function loadImage(index, file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    state.images[index] = img;
+                    state.originalImages[index] = img;
+
+                    // Initialize grid
+                    initGrid(index, state.gridSize);
+
+                    // Hide drop zone
+                    document.getElementById(`dropZone${index + 1}`).style.display = 'none';
+
+                    // Set canvas size
+                    const maxSize = 550;
+                    const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+                    canvases[index].width = img.width * scale;
+                    canvases[index].height = img.height * scale;
+                    canvases[index].dataset.scale = scale;
+
+                    drawImage(index);
+                    createGridHandles(index);
+                    updateStatus(`Loaded image ${index + 1}: ${img.width}x${img.height}`);
+
+                    // Auto-apply transform for this image
+                    applyTransform(index);
+
+                    // Auto-update stitch if both images loaded
+                    if (state.images[0] && state.images[1]) {
+                        autoPositionImages();
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function drawImage(index) {
+            const img = state.images[index];
+            const ctx = contexts[index];
+            const canvas = canvases[index];
+            const scale = parseFloat(canvas.dataset.scale) || 1;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Apply transforms
+            const t = state.transforms[index];
+
+            ctx.save();
+            ctx.filter = `brightness(${100 + t.brightness}%) contrast(${t.contrast})`;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
+
+            // Apply threshold if set
+            if (t.threshold > 0) {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    const val = avg > t.threshold ? 255 : 0;
+                    data[i] = data[i + 1] = data[i + 2] = val;
+                }
+                ctx.putImageData(imageData, 0, 0);
+            }
+
+            // Draw grid mesh overlay
+            if (state.grids[index] && state.mode === 'grid') {
+                const grid = state.grids[index];
+                const img = state.images[index];
+
+                // Calculate scale from image to canvas
+                const scaleX = canvas.width / img.width;
+                const scaleY = canvas.height / img.height;
+
+                ctx.strokeStyle = 'rgba(0, 217, 255, 0.8)';
+                ctx.lineWidth = 2;
+
+                // Draw horizontal lines
+                for (let row = 0; row < grid.length; row++) {
+                    ctx.beginPath();
+                    ctx.moveTo(grid[row][0].x * scaleX, grid[row][0].y * scaleY);
+                    for (let col = 1; col < grid[row].length; col++) {
+                        ctx.lineTo(grid[row][col].x * scaleX, grid[row][col].y * scaleY);
+                    }
+                    ctx.stroke();
+                }
+
+                // Draw vertical lines
+                for (let col = 0; col < grid[0].length; col++) {
+                    ctx.beginPath();
+                    ctx.moveTo(grid[0][col].x * scaleX, grid[0][col].y * scaleY);
+                    for (let row = 1; row < grid.length; row++) {
+                        ctx.lineTo(grid[row][col].x * scaleX, grid[row][col].y * scaleY);
+                    }
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function createGridHandles(index) {
+            // Remove existing handles
+            const container = containers[index];
+            container.querySelectorAll('.control-handle').forEach(h => h.remove());
+
+            if (!state.grids[index] || !state.images[index]) return;
+
+            const canvas = canvases[index];
+            const img = state.images[index];
+            const grid = state.grids[index];
+
+            // Use multiple frames to ensure layout is complete
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const canvasRect = canvas.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
+
+                    // Calculate offset of canvas within container
+                    const offsetX = canvasRect.left - containerRect.left;
+                    const offsetY = canvasRect.top - containerRect.top;
+
+                    // Scale: image coords -> displayed canvas coords
+                    // First: image -> canvas internal (using canvas.width/height)
+                    // Then: canvas internal -> displayed (using rect vs internal)
+                    const internalScaleX = canvas.width / img.width;
+                    const internalScaleY = canvas.height / img.height;
+                    const displayScaleX = canvasRect.width / canvas.width;
+                    const displayScaleY = canvasRect.height / canvas.height;
+                    const scaleX = internalScaleX * displayScaleX;
+                    const scaleY = internalScaleY * displayScaleY;
+
+                    for (let row = 0; row < grid.length; row++) {
+                        for (let col = 0; col < grid[row].length; col++) {
+                            const point = grid[row][col];
+                            const handle = document.createElement('div');
+
+                            // Determine handle type
+                            const isCorner = (row === 0 || row === grid.length - 1) &&
+                                             (col === 0 || col === grid[row].length - 1);
+                            const isEdge = row === 0 || row === grid.length - 1 ||
+                                           col === 0 || col === grid[row].length - 1;
+
+                            handle.className = 'control-handle ' +
+                                (isCorner ? 'corner' : (isEdge ? 'edge' : 'grid'));
+
+                            handle.dataset.imageIndex = index;
+                            handle.dataset.row = row;
+                            handle.dataset.col = col;
+
+                            // Position handle at the grid point, scaled to displayed size
+                            handle.style.left = (offsetX + point.x * scaleX) + 'px';
+                            handle.style.top = (offsetY + point.y * scaleY) + 'px';
+
+                            handle.addEventListener('mousedown', startGridDrag);
+                            container.appendChild(handle);
+                        }
+                    }
+                });
+            });
+        }
+
+        function startGridDrag(e) {
+            e.preventDefault();
+            state.dragging = {
+                type: 'grid',
+                imageIndex: parseInt(e.target.dataset.imageIndex),
+                row: parseInt(e.target.dataset.row),
+                col: parseInt(e.target.dataset.col),
+                element: e.target
+            };
+            state.dragStart = { x: e.clientX, y: e.clientY };
+
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', endDrag);
+        }
+
+        function onDrag(e) {
+            if (!state.dragging) return;
+
+            if (state.dragging.type === 'grid') {
+                const { imageIndex, row, col, element } = state.dragging;
+                const canvas = canvases[imageIndex];
+                const img = state.images[imageIndex];
+                const container = containers[imageIndex];
+                const canvasRect = canvas.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+
+                // Calculate scales
+                const scaleX = canvasRect.width / img.width;
+                const scaleY = canvasRect.height / img.height;
+
+                const offsetX = canvasRect.left - containerRect.left;
+                const offsetY = canvasRect.top - containerRect.top;
+
+                // Mouse position relative to canvas
+                const mouseX = e.clientX - canvasRect.left;
+                const mouseY = e.clientY - canvasRect.top;
+
+                // Convert to image coordinates
+                const imgX = mouseX / scaleX;
+                const imgY = mouseY / scaleY;
+
+                // Update grid point (allow outside bounds for padding/expansion)
+                state.grids[imageIndex][row][col] = {
+                    x: imgX,
+                    y: imgY
+                };
+
+                // Update handle position (in container coordinates)
+                element.style.left = (offsetX + mouseX) + 'px';
+                element.style.top = (offsetY + mouseY) + 'px';
+
+                drawImage(imageIndex);
+            }
+        }
+
+        function endDrag() {
+            if (state.dragging && state.dragging.type === 'grid') {
+                const imageIndex = state.dragging.imageIndex;
+                // Auto-apply transform when drag ends
+                applyTransform(imageIndex);
+            }
+            state.dragging = null;
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mouseup', endDrag);
+        }
+
+        function setupControls() {
+            // Mode buttons
+            document.getElementById('modeGrid').addEventListener('click', () => {
+                state.mode = 'grid';
+                document.getElementById('modeGrid').classList.add('active');
+                document.getElementById('modePosition').classList.remove('active');
+                for (let i = 0; i < 2; i++) {
+                    createGridHandles(i);
+                    drawImage(i);
+                }
+            });
+
+            document.getElementById('modePosition').addEventListener('click', () => {
+                state.mode = 'position';
+                document.getElementById('modePosition').classList.add('active');
+                document.getElementById('modeGrid').classList.remove('active');
+                containers.forEach(c => c.querySelectorAll('.control-handle').forEach(h => h.remove()));
+                for (let i = 0; i < 2; i++) drawImage(i);
+            });
+
+            // Grid size selector
+            document.getElementById('gridSize').addEventListener('change', (e) => {
+                state.gridSize = parseInt(e.target.value);
+                for (let i = 0; i < 2; i++) {
+                    if (state.images[i]) {
+                        initGrid(i, state.gridSize);
+                        createGridHandles(i);
+                        drawImage(i);
+                    }
+                }
+                updateStatus(`Grid size changed to ${state.gridSize}x${state.gridSize}`);
+            });
+
+            // Rotation buttons
+            document.getElementById('rotate1CCW').addEventListener('click', () => rotate(0, -90));
+            document.getElementById('rotate1CW').addEventListener('click', () => rotate(0, 90));
+            document.getElementById('rotate2CCW').addEventListener('click', () => rotate(1, -90));
+            document.getElementById('rotate2CW').addEventListener('click', () => rotate(1, 90));
+
+            // Apply transform buttons
+            document.getElementById('apply1').addEventListener('click', () => applyTransform(0));
+            document.getElementById('apply2').addEventListener('click', () => applyTransform(1));
+
+            // Brightness/Contrast/Threshold sliders
+            for (let i = 0; i < 2; i++) {
+                document.getElementById(`brightness${i + 1}`).addEventListener('input', (e) => {
+                    state.transforms[i].brightness = parseInt(e.target.value);
+                    drawImage(i);
+                });
+                document.getElementById(`brightness${i + 1}`).addEventListener('change', (e) => {
+                    applyTransform(i);
+                });
+                document.getElementById(`contrast${i + 1}`).addEventListener('input', (e) => {
+                    state.transforms[i].contrast = parseFloat(e.target.value);
+                    drawImage(i);
+                });
+                document.getElementById(`contrast${i + 1}`).addEventListener('change', (e) => {
+                    applyTransform(i);
+                });
+                document.getElementById(`threshold${i + 1}`).addEventListener('input', (e) => {
+                    state.transforms[i].threshold = parseInt(e.target.value);
+                    drawImage(i);
+                });
+                document.getElementById(`threshold${i + 1}`).addEventListener('change', (e) => {
+                    applyTransform(i);
+                });
+            }
+
+            // Position inputs
+            document.getElementById('img1X').addEventListener('input', (e) => {
+                state.positions[0].x = parseInt(e.target.value) || 0;
+            });
+            document.getElementById('img1Y').addEventListener('input', (e) => {
+                state.positions[0].y = parseInt(e.target.value) || 0;
+            });
+            document.getElementById('img2X').addEventListener('input', (e) => {
+                state.positions[1].x = parseInt(e.target.value) || 0;
+            });
+            document.getElementById('img2Y').addEventListener('input', (e) => {
+                state.positions[1].y = parseInt(e.target.value) || 0;
+            });
+
+            // Alignment buttons
+            document.getElementById('alignTop').addEventListener('click', () => {
+                state.positions[0].y = 0;
+                state.positions[1].y = 0;
+                updatePositionInputs();
+                updateStitch();
+            });
+
+            document.getElementById('alignBottom').addEventListener('click', () => {
+                const img1 = state.processedImages[0] || state.images[0];
+                const img2 = state.processedImages[1] || state.images[1];
+                if (img1 && img2) {
+                    const maxH = Math.max(img1.height, img2.height);
+                    state.positions[0].y = maxH - img1.height;
+                    state.positions[1].y = maxH - img2.height;
+                    updatePositionInputs();
+                    updateStitch();
+                }
+            });
+
+            document.getElementById('snapSpine').addEventListener('click', () => {
+                // Place image 2 spine next to image 1
+                const img1 = state.processedImages[0] || state.images[0];
+                if (img1) {
+                    state.positions[1].x = img1.width + state.positions[0].x;
+                    updatePositionInputs();
+                    updateStitch();
+                }
+            });
+
+            document.getElementById('img2Left').addEventListener('click', () => {
+                const img1 = state.processedImages[0] || state.images[0];
+                const img2 = state.processedImages[1] || state.images[1];
+                if (img1 && img2) {
+                    // Put image 2 on left of image 1
+                    state.positions[1].x = 0;
+                    state.positions[1].y = 0;
+                    state.positions[0].x = img2.width;
+                    state.positions[0].y = 0;
+                    updatePositionInputs();
+                    updateStitch();
+                }
+            });
+
+            document.getElementById('img2Right').addEventListener('click', () => {
+                const img1 = state.processedImages[0] || state.images[0];
+                const img2 = state.processedImages[1] || state.images[1];
+                if (img1 && img2) {
+                    // Put image 2 on right of image 1
+                    state.positions[0].x = 0;
+                    state.positions[0].y = 0;
+                    state.positions[1].x = img1.width;
+                    state.positions[1].y = 0;
+                    updatePositionInputs();
+                    updateStitch();
+                }
+            });
+
+            // Update stitch button
+            document.getElementById('updateStitch').addEventListener('click', updateStitch);
+
+            // Download button
+            document.getElementById('downloadBtn').addEventListener('click', downloadResult);
+
+            // Reset button
+            document.getElementById('resetBtn').addEventListener('click', resetAll);
+        }
+
+        function rotate(index, degrees) {
+            if (!state.images[index]) return;
+
+            const img = state.images[index];
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+
+            if (Math.abs(degrees) === 90) {
+                tempCanvas.width = img.height;
+                tempCanvas.height = img.width;
+            } else {
+                tempCanvas.width = img.width;
+                tempCanvas.height = img.height;
+            }
+
+            tempCtx.save();
+            tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+            tempCtx.rotate(degrees * Math.PI / 180);
+            tempCtx.drawImage(img, -img.width / 2, -img.height / 2);
+            tempCtx.restore();
+
+            // Create new image from canvas
+            const newImg = new Image();
+            newImg.onload = () => {
+                state.images[index] = newImg;
+
+                // Reset grid
+                initGrid(index, state.gridSize);
+
+                // Update canvas size
+                const maxSize = 550;
+                const scale = Math.min(maxSize / newImg.width, maxSize / newImg.height, 1);
+                canvases[index].width = newImg.width * scale;
+                canvases[index].height = newImg.height * scale;
+                canvases[index].dataset.scale = scale;
+
+                drawImage(index);
+                createGridHandles(index);
+                updateStatus(`Rotated image ${index + 1} by ${degrees}°`);
+
+                // Auto-apply transform after rotation
+                applyTransform(index);
+            };
+            newImg.src = tempCanvas.toDataURL();
+        }
+
+        function applyTransform(index) {
+            if (!state.images[index] || !state.grids[index]) return;
+
+            const img = state.images[index];
+            const grid = state.grids[index];
+            const t = state.transforms[index];
+
+            updateStatus(`Applying mesh warp to image ${index + 1}...`);
+
+            // INVERTED MAPPING for document unwrapping:
+            // - Grid handles mark where content IS on the distorted source image
+            // - Output should be a uniform rectangle
+            // So we sample FROM grid positions, output TO uniform grid
+
+            const gridRows = grid.length;
+            const gridCols = grid[0].length;
+
+            // Output is same size as original image (a nice rectangle)
+            const outputWidth = img.width;
+            const outputHeight = img.height;
+
+            // Create temp canvas for the source image with filters applied
+            const srcCanvas = document.createElement('canvas');
+            srcCanvas.width = img.width;
+            srcCanvas.height = img.height;
+            const srcCtx = srcCanvas.getContext('2d');
+            srcCtx.filter = `brightness(${100 + t.brightness}%) contrast(${t.contrast})`;
+            srcCtx.drawImage(img, 0, 0);
+
+            // Apply threshold if set
+            if (t.threshold > 0) {
+                const imageData = srcCtx.getImageData(0, 0, srcCanvas.width, srcCanvas.height);
+                const data = imageData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    const val = avg > t.threshold ? 255 : 0;
+                    data[i] = data[i + 1] = data[i + 2] = val;
+                }
+                srcCtx.putImageData(imageData, 0, 0);
+            }
+
+            // Create output canvas
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = outputWidth;
+            tempCanvas.height = outputHeight;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.fillStyle = '#ffffff';
+            tempCtx.fillRect(0, 0, outputWidth, outputHeight);
+
+            // Perform INVERSE mesh warp by drawing triangles for each grid cell
+            // Source = user-adjusted grid positions (where content IS on distorted image)
+            // Destination = uniform rectangular grid (where content goes in straightened output)
+
+            for (let row = 0; row < gridRows - 1; row++) {
+                for (let col = 0; col < gridCols - 1; col++) {
+                    // Source quad: user-adjusted grid (where to sample FROM on distorted image)
+                    const srcTL = grid[row][col];
+                    const srcTR = grid[row][col + 1];
+                    const srcBL = grid[row + 1][col];
+                    const srcBR = grid[row + 1][col + 1];
+
+                    // Destination quad: uniform grid (where to place in straightened output)
+                    const dstTL = { x: (col / (gridCols - 1)) * outputWidth, y: (row / (gridRows - 1)) * outputHeight };
+                    const dstTR = { x: ((col + 1) / (gridCols - 1)) * outputWidth, y: (row / (gridRows - 1)) * outputHeight };
+                    const dstBL = { x: (col / (gridCols - 1)) * outputWidth, y: ((row + 1) / (gridRows - 1)) * outputHeight };
+                    const dstBR = { x: ((col + 1) / (gridCols - 1)) * outputWidth, y: ((row + 1) / (gridRows - 1)) * outputHeight };
+
+                    // Draw two triangles for this quad
+                    drawTriangle(tempCtx, srcCanvas,
+                        srcTL, srcTR, srcBL,
+                        dstTL, dstTR, dstBL);
+                    drawTriangle(tempCtx, srcCanvas,
+                        srcTR, srcBR, srcBL,
+                        dstTR, dstBR, dstBL);
+                }
+            }
+
+            // Store processed image
+            try {
+                const dataUrl = tempCanvas.toDataURL();
+                const processedImg = new Image();
+                processedImg.onload = () => {
+                    state.processedImages[index] = processedImg;
+                    updateStatus(`Applied mesh warp to image ${index + 1}: ${processedImg.width}x${processedImg.height}`);
+                    // Only auto-position on first load, not on subsequent transforms
+                    if (state.images[0] && state.images[1] && !state.hasAutoPositioned) {
+                        state.hasAutoPositioned = true;
+                        autoPositionImages();
+                    } else {
+                        updateStitch();
+                    }
+                };
+                processedImg.src = dataUrl;
+            } catch (e) {
+                // Canvas tainted (CORS issue with file:// URLs)
+                // Fall back to using original image
+                console.warn('Canvas tainted, using original image:', e.message);
+                state.processedImages[index] = state.images[index];
+                updateStatus(`Image ${index + 1} ready (serve via HTTP for mesh warp)`);
+                // Only auto-position on first load, not on subsequent transforms
+                if (state.images[0] && state.images[1] && !state.hasAutoPositioned) {
+                    state.hasAutoPositioned = true;
+                    autoPositionImages();
+                } else {
+                    updateStitch();
+                }
+            }
+        }
+
+        // Draw a textured triangle using affine transform
+        function drawTriangle(ctx, srcCanvas, srcP1, srcP2, srcP3, dstP1, dstP2, dstP3) {
+            // Calculate affine transform matrix
+            const srcMatrix = [
+                [srcP1.x, srcP1.y, 1, 0, 0, 0],
+                [0, 0, 0, srcP1.x, srcP1.y, 1],
+                [srcP2.x, srcP2.y, 1, 0, 0, 0],
+                [0, 0, 0, srcP2.x, srcP2.y, 1],
+                [srcP3.x, srcP3.y, 1, 0, 0, 0],
+                [0, 0, 0, srcP3.x, srcP3.y, 1]
+            ];
+
+            const dstVector = [dstP1.x, dstP1.y, dstP2.x, dstP2.y, dstP3.x, dstP3.y];
+
+            // Solve for transform coefficients (simplified - use destination as source mapping)
+            // For canvas, we need inverse: map dst -> src
+
+            ctx.save();
+
+            // Clip to triangle
+            ctx.beginPath();
+            ctx.moveTo(dstP1.x, dstP1.y);
+            ctx.lineTo(dstP2.x, dstP2.y);
+            ctx.lineTo(dstP3.x, dstP3.y);
+            ctx.closePath();
+            ctx.clip();
+
+            // Calculate affine transform from src triangle to dst triangle
+            // Using the formula for affine transform between triangles
+            const denom = (srcP1.x - srcP3.x) * (srcP2.y - srcP3.y) - (srcP2.x - srcP3.x) * (srcP1.y - srcP3.y);
+
+            if (Math.abs(denom) < 0.0001) {
+                ctx.restore();
+                return;
+            }
+
+            const a = ((dstP1.x - dstP3.x) * (srcP2.y - srcP3.y) - (dstP2.x - dstP3.x) * (srcP1.y - srcP3.y)) / denom;
+            const b = ((dstP2.x - dstP3.x) * (srcP1.x - srcP3.x) - (dstP1.x - dstP3.x) * (srcP2.x - srcP3.x)) / denom;
+            const c = dstP3.x - a * srcP3.x - b * srcP3.y;
+
+            const d = ((dstP1.y - dstP3.y) * (srcP2.y - srcP3.y) - (dstP2.y - dstP3.y) * (srcP1.y - srcP3.y)) / denom;
+            const e = ((dstP2.y - dstP3.y) * (srcP1.x - srcP3.x) - (dstP1.y - dstP3.y) * (srcP2.x - srcP3.x)) / denom;
+            const f = dstP3.y - d * srcP3.x - e * srcP3.y;
+
+            ctx.setTransform(a, d, b, e, c, f);
+            ctx.drawImage(srcCanvas, 0, 0);
+
+            ctx.restore();
+        }
+
+        function autoPositionImages() {
+            // Position images side by side by default
+            const img1 = state.processedImages[0] || state.images[0];
+            const img2 = state.processedImages[1] || state.images[1];
+
+            if (img1 && img2) {
+                // Put image 1 on left, image 2 on right
+                state.positions[0].x = 0;
+                state.positions[0].y = 0;
+                state.positions[1].x = img1.width;
+                state.positions[1].y = 0;
+                updatePositionInputs();
+                updateStitch();
+            }
+        }
+
+        function updateStitch() {
+            // Use processed images if available, otherwise use original
+            const img1 = state.processedImages[0] || state.images[0];
+            const img2 = state.processedImages[1] || state.images[1];
+
+            if (!img1 && !img2) return;
+
+            // Calculate output size
+            let minX = 0, minY = 0, maxX = 0, maxY = 0;
+
+            if (img1) {
+                minX = Math.min(minX, state.positions[0].x);
+                minY = Math.min(minY, state.positions[0].y);
+                maxX = Math.max(maxX, state.positions[0].x + img1.width);
+                maxY = Math.max(maxY, state.positions[0].y + img1.height);
+            }
+            if (img2) {
+                minX = Math.min(minX, state.positions[1].x);
+                minY = Math.min(minY, state.positions[1].y);
+                maxX = Math.max(maxX, state.positions[1].x + img2.width);
+                maxY = Math.max(maxY, state.positions[1].y + img2.height);
+            }
+
+            const outputWidth = maxX - minX;
+            const outputHeight = maxY - minY;
+
+            // Create full-size canvas for output
+            const fullCanvas = document.createElement('canvas');
+            fullCanvas.width = outputWidth;
+            fullCanvas.height = outputHeight;
+            const fullCtx = fullCanvas.getContext('2d');
+
+            // White background
+            fullCtx.fillStyle = '#ffffff';
+            fullCtx.fillRect(0, 0, outputWidth, outputHeight);
+
+            // Draw images
+            if (img1) {
+                fullCtx.drawImage(img1, state.positions[0].x - minX, state.positions[0].y - minY);
+            }
+            if (img2) {
+                fullCtx.drawImage(img2, state.positions[1].x - minX, state.positions[1].y - minY);
+            }
+
+            // Store for download
+            state.outputCanvas = fullCanvas;
+
+            // Scale for display
+            const maxDisplaySize = 700;
+            const displayScale = Math.min(maxDisplaySize / outputWidth, maxDisplaySize / outputHeight, 1);
+
+            outputCanvas.width = outputWidth * displayScale;
+            outputCanvas.height = outputHeight * displayScale;
+            outputCtx.drawImage(fullCanvas, 0, 0, outputCanvas.width, outputCanvas.height);
+
+            updateStatus(`Stitch updated: ${outputWidth}x${outputHeight}px`);
+        }
+
+        function setupOutputInteraction() {
+            let isDragging = false;
+            let draggedImage = null;
+            let startPos = { x: 0, y: 0 };
+
+            outputCanvas.addEventListener('mousedown', (e) => {
+                if (state.mode !== 'position') return;
+
+                const rect = outputCanvas.getBoundingClientRect();
+                const scaleX = (state.outputCanvas?.width || 1) / outputCanvas.width;
+                const scaleY = (state.outputCanvas?.height || 1) / outputCanvas.height;
+
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+
+                // Check which image was clicked
+                for (let i = 1; i >= 0; i--) {
+                    const img = state.processedImages[i] || state.images[i];
+                    if (!img) continue;
+
+                    const pos = state.positions[i];
+                    if (x >= pos.x && x <= pos.x + img.width &&
+                        y >= pos.y && y <= pos.y + img.height) {
+                        isDragging = true;
+                        draggedImage = i;
+                        startPos = { x: e.clientX - pos.x, y: e.clientY - pos.y };
+                        break;
+                    }
+                }
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging || draggedImage === null) return;
+
+                state.positions[draggedImage].x = e.clientX - startPos.x;
+                state.positions[draggedImage].y = e.clientY - startPos.y;
+                updatePositionInputs();
+                updateStitch();
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                draggedImage = null;
+            });
+        }
+
+        function updatePositionInputs() {
+            document.getElementById('img1X').value = Math.round(state.positions[0].x);
+            document.getElementById('img1Y').value = Math.round(state.positions[0].y);
+            document.getElementById('img2X').value = Math.round(state.positions[1].x);
+            document.getElementById('img2Y').value = Math.round(state.positions[1].y);
+        }
+
+        function downloadResult() {
+            if (!state.outputCanvas) {
+                updateStatus('No output to download. Update stitch first.');
+                return;
+            }
+
+            const link = document.createElement('a');
+            link.download = 'stitched_document.png';
+            link.href = state.outputCanvas.toDataURL('image/png');
+            link.click();
+            updateStatus('Downloaded: stitched_document.png');
+        }
+
+        function resetAll() {
+            state.images = [null, null];
+            state.originalImages = [null, null];
+            state.grids = [null, null];
+            state.transforms = [
+                { rotation: 0, brightness: 0, contrast: 1, threshold: 0 },
+                { rotation: 0, brightness: 0, contrast: 1, threshold: 0 }
+            ];
+            state.positions = [{ x: 0, y: 0 }, { x: 0, y: 0 }];
+            state.processedImages = [null, null];
+            state.hasAutoPositioned = false;
+
+            for (let i = 0; i < 2; i++) {
+                contexts[i].clearRect(0, 0, canvases[i].width, canvases[i].height);
+                document.getElementById(`dropZone${i + 1}`).style.display = 'block';
+                document.getElementById(`brightness${i + 1}`).value = 0;
+                document.getElementById(`contrast${i + 1}`).value = 1;
+                document.getElementById(`threshold${i + 1}`).value = 0;
+                containers[i].querySelectorAll('.control-handle').forEach(h => h.remove());
+            }
+
+            outputCtx.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
+            updatePositionInputs();
+            updateStatus('Reset complete. Load images to begin.');
+        }
+
+        function updateStatus(msg) {
+            document.getElementById('statusBar').textContent = msg;
+        }
+
+        // Initialize on load
+        init();
+
+        // Auto-load local images for testing
+        function autoLoadImages() {
+            const images = ['sources/IMG_4936.jpeg', 'sources/IMG_4937.jpeg'];
+            images.forEach((filename, index) => {
+                const img = new Image();
+                img.onload = () => {
+                    state.images[index] = img;
+                    state.originalImages[index] = img;
+                    initGrid(index, state.gridSize);
+                    document.getElementById(`dropZone${index + 1}`).style.display = 'none';
+
+                    const maxSize = 550;
+                    const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+                    canvases[index].width = img.width * scale;
+                    canvases[index].height = img.height * scale;
+                    canvases[index].dataset.scale = scale;
+
+                    drawImage(index);
+                    createGridHandles(index);
+                    updateStatus(`Auto-loaded ${filename}: ${img.width}x${img.height}`);
+
+                    // Auto-apply transform for this image
+                    applyTransform(index);
+
+                    if (state.images[0] && state.images[1]) {
+                        autoPositionImages();
+                    }
+                };
+                img.onerror = () => {
+                    console.log(`Could not auto-load ${filename}`);
+                };
+                img.src = filename;
+            });
+        }
+
+        // Try to auto-load after a short delay
+        setTimeout(autoLoadImages, 500);
+    </script>
+</body>
+</html>

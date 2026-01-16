@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 2 Alignment Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+            background: #1a1a2e;
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 8px 0;
+        }
+
+        header h1 {
+            font-size: 1.3em;
+            color: #00d9ff;
+        }
+
+        header p {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .toolbar {
+            background: #16213e;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 0 15px;
+            border-right: 1px solid #333;
+        }
+
+        .toolbar-group:last-child {
+            border-right: none;
+        }
+
+        .toolbar-group label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        button {
+            background: #0f3460;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        button:hover {
+            background: #1a5490;
+        }
+
+        button.active {
+            background: #00d9ff;
+            color: #000;
+        }
+
+        button.success {
+            background: #00b894;
+        }
+
+        button.danger {
+            background: #e94560;
+        }
+
+        input[type="range"] {
+            width: 80px;
+        }
+
+        input[type="number"], input[type="text"] {
+            width: 60px;
+            padding: 4px;
+            background: #0a0a15;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 8px;
+            background: #0a0a15;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 4px;
+            font-family: "Songti SC", monospace;
+            font-size: 16px;
+        }
+
+        select {
+            padding: 4px;
+            background: #0a0a15;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 20px;
+        }
+
+        .document-area {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .document-container {
+            position: relative;
+            background: #0a0a15;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 700px;
+            height: 600px;
+            flex-shrink: 0;
+        }
+
+        .original-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .text-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .column {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: move;
+            pointer-events: auto;
+            padding: 2px;
+            border: 1px dashed transparent;
+            transition: border-color 0.2s;
+        }
+
+        .column:hover, .column.selected {
+            border-color: #00d9ff;
+        }
+
+        .column.selected {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .char {
+            display: block;
+            color: rgba(255, 200, 100, var(--text-opacity, 0.8));
+            text-shadow: 0 0 3px rgba(0,0,0,0.8);
+            cursor: pointer;
+        }
+
+        .char:hover {
+            color: #ff6b6b;
+        }
+
+        .vertical-slider {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            gap: 4px;
+        }
+
+        .vertical-slider .slider-label {
+            writing-mode: vertical-rl;
+            font-size: 0.7em;
+            color: #666;
+        }
+
+        .vertical-slider input[type="range"] {
+            writing-mode: vertical-lr;
+            direction: rtl;
+            height: 150px;
+            width: 20px;
+        }
+
+        .panel {
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .panel-section {
+            background: #16213e;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .panel-section h3 {
+            color: #00d9ff;
+            font-size: 13px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 4px;
+        }
+
+        .column-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .column-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            margin: 2px 0;
+            background: #0a0a15;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .column-item:hover, .column-item.selected {
+            background: #1a5490;
+        }
+
+        .column-item .chars-preview {
+            font-family: "Songti SC", serif;
+            font-size: 14px;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .column-item .pos-info {
+            color: #888;
+            font-size: 11px;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 6px 10px;
+            align-items: center;
+        }
+
+        .property-grid label {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .property-grid input, .property-grid select {
+            width: 100%;
+        }
+
+        .output-box {
+            background: #0a0a15;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 11px;
+            max-height: 300px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .status-bar {
+            background: #0a0a15;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .instructions {
+            background: #0f3460;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .instructions h4 {
+            color: #00d9ff;
+            margin-bottom: 6px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Page 2 Alignment Tool</h1>
+            <p>Interactive alignment of Chinese transcription with original_2.png</p>
+        </header>
+
+        <div class="instructions">
+            <h4>How to use:</h4>
+            <ol>
+                <li><strong>Add columns:</strong> Enter Chinese text and click "Add Column" to create a draggable text column</li>
+                <li><strong>Position:</strong> Drag columns to align with the original image, or use the property panel for precise positioning</li>
+                <li><strong>Adjust:</strong> Change font size, line spacing, and opacity to match the original</li>
+                <li><strong>Export:</strong> Click "Export JSON" to get the alignment data for use in the final page</li>
+            </ol>
+        </div>
+
+        <div class="toolbar">
+            <div class="toolbar-group">
+                <label>Opacity:</label>
+                <input type="range" id="textOpacity" min="0" max="100" value="80">
+            </div>
+            <div class="toolbar-group">
+                <label>Image:</label>
+                <input type="range" id="imageOpacity" min="0" max="100" value="100">
+            </div>
+            <div class="toolbar-group">
+                <label>Default Size:</label>
+                <input type="number" id="defaultSize" value="16" min="8" max="48">
+            </div>
+            <div class="toolbar-group">
+                <label>Default Spacing:</label>
+                <input type="number" id="defaultSpacing" value="1.14" min="0.5" max="3" step="0.02">
+            </div>
+            <div class="toolbar-group">
+                <button id="exportBtn" class="success">Export JSON</button>
+                <button id="importBtn">Import JSON</button>
+                <button id="clearBtn" class="danger">Clear All</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="document-area">
+                <div class="document-container" id="documentContainer">
+                    <img src="original_2.png" alt="Original document" class="original-image" id="originalImage">
+                    <div class="text-overlay" id="textOverlay">
+                        <!-- Columns added here -->
+                    </div>
+                </div>
+                <div class="vertical-slider">
+                    <span class="slider-label">Text</span>
+                    <input type="range" id="blendSlider" min="0" max="100" value="50">
+                    <span class="slider-label">Image</span>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-section">
+                    <h3>Add New Column</h3>
+                    <textarea id="newColumnText" rows="3" placeholder="Enter Chinese characters (one column, top to bottom)"></textarea>
+                    <div style="margin-top: 8px; display: flex; gap: 8px;">
+                        <select id="newColumnSection">
+                            <option value="spine">Spine</option>
+                            <option value="title">Title</option>
+                            <option value="ancestry">Ancestry</option>
+                            <option value="family_background">Family Background</option>
+                            <option value="youth">Youth</option>
+                            <option value="virtues">Virtues</option>
+                            <option value="occupation">Occupation</option>
+                            <option value="family">Family</option>
+                            <option value="death">Death</option>
+                            <option value="burial">Burial</option>
+                            <option value="credit">Credit</option>
+                            <option value="text" selected>Text (general)</option>
+                        </select>
+                        <button id="addColumnBtn" class="success">Add Column</button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Columns (<span id="columnCount">0</span>)</h3>
+                    <div class="column-list" id="columnList">
+                        <!-- Column items listed here -->
+                    </div>
+                </div>
+
+                <div class="panel-section" id="selectedColumnPanel" style="display: none;">
+                    <h3>Selected Column</h3>
+                    <div class="property-grid">
+                        <label>X:</label>
+                        <input type="number" id="colX" value="0">
+                        <label>Y:</label>
+                        <input type="number" id="colY" value="0">
+                        <label>Size:</label>
+                        <input type="number" id="colSize" value="16" min="8" max="48">
+                        <label>Spacing:</label>
+                        <input type="number" id="colSpacing" value="1.14" min="0.5" max="3" step="0.02">
+                        <label>Section:</label>
+                        <select id="colSection">
+                            <option value="spine">Spine</option>
+                            <option value="title">Title</option>
+                            <option value="ancestry">Ancestry</option>
+                            <option value="family_background">Family Background</option>
+                            <option value="youth">Youth</option>
+                            <option value="virtues">Virtues</option>
+                            <option value="occupation">Occupation</option>
+                            <option value="family">Family</option>
+                            <option value="death">Death</option>
+                            <option value="burial">Burial</option>
+                            <option value="credit">Credit</option>
+                            <option value="text">Text</option>
+                        </select>
+                        <label>Chars:</label>
+                        <input type="text" id="colChars" style="width: 100%; font-family: 'Songti SC', serif;">
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 8px;">
+                        <button id="updateColBtn">Update</button>
+                        <button id="deleteColBtn" class="danger">Delete</button>
+                        <button id="duplicateColBtn">Duplicate</button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Export Data</h3>
+                    <div class="output-box" id="outputBox">// Click "Export JSON" to generate layout data</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar" id="statusBar">Ready. Add columns and drag them to align with the original image.</div>
+    </div>
+
+    <script>
+        // ========== STATE ==========
+        const state = {
+            columns: [],
+            selectedColumnIndex: null,
+            dragging: null,
+            dragStart: null
+        };
+
+        // ========== DOM ELEMENTS ==========
+        const textOverlay = document.getElementById('textOverlay');
+        const columnList = document.getElementById('columnList');
+        const selectedColumnPanel = document.getElementById('selectedColumnPanel');
+        const outputBox = document.getElementById('outputBox');
+
+        // ========== INITIALIZATION ==========
+        function init() {
+            setupEventListeners();
+            updateStatus('Ready. Add columns to begin alignment.');
+        }
+
+        function setupEventListeners() {
+            // Opacity sliders
+            document.getElementById('textOpacity').addEventListener('input', updateOpacity);
+            document.getElementById('imageOpacity').addEventListener('input', updateImageOpacity);
+            document.getElementById('blendSlider').addEventListener('input', updateBlend);
+
+            // Add column
+            document.getElementById('addColumnBtn').addEventListener('click', addColumn);
+            document.getElementById('newColumnText').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) addColumn();
+            });
+
+            // Column property inputs
+            ['colX', 'colY', 'colSize', 'colSpacing', 'colSection', 'colChars'].forEach(id => {
+                document.getElementById(id).addEventListener('change', updateSelectedColumn);
+            });
+
+            // Column actions
+            document.getElementById('updateColBtn').addEventListener('click', updateSelectedColumn);
+            document.getElementById('deleteColBtn').addEventListener('click', deleteSelectedColumn);
+            document.getElementById('duplicateColBtn').addEventListener('click', duplicateSelectedColumn);
+
+            // Export/Import
+            document.getElementById('exportBtn').addEventListener('click', exportJSON);
+            document.getElementById('importBtn').addEventListener('click', importJSON);
+            document.getElementById('clearBtn').addEventListener('click', clearAll);
+
+            // Drag handling
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', endDrag);
+
+            // Click outside to deselect
+            document.getElementById('documentContainer').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('documentContainer') ||
+                    e.target === document.getElementById('originalImage')) {
+                    deselectColumn();
+                }
+            });
+        }
+
+        // ========== COLUMN MANAGEMENT ==========
+        function addColumn() {
+            const text = document.getElementById('newColumnText').value.trim();
+            if (!text) {
+                updateStatus('Please enter some text for the column.');
+                return;
+            }
+
+            const section = document.getElementById('newColumnSection').value;
+            const size = parseInt(document.getElementById('defaultSize').value) || 16;
+            const spacing = parseFloat(document.getElementById('defaultSpacing').value) || 1.14;
+
+            const column = {
+                id: Date.now(),
+                chars: text.replace(/\n/g, ''),
+                section: section,
+                x: 50 + state.columns.length * 25,
+                y: 50,
+                size: size,
+                spacing: spacing
+            };
+
+            state.columns.push(column);
+            document.getElementById('newColumnText').value = '';
+
+            renderColumns();
+            selectColumn(state.columns.length - 1);
+            updateStatus(`Added column: "${text.substring(0, 10)}..."`);
+        }
+
+        function renderColumns() {
+            textOverlay.innerHTML = '';
+            columnList.innerHTML = '';
+
+            state.columns.forEach((col, index) => {
+                // Render in overlay
+                const colDiv = document.createElement('div');
+                colDiv.className = 'column' + (index === state.selectedColumnIndex ? ' selected' : '');
+                colDiv.dataset.index = index;
+                colDiv.style.left = col.x + 'px';
+                colDiv.style.top = col.y + 'px';
+
+                for (const char of col.chars) {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = 'char';
+                    charSpan.textContent = char;
+                    charSpan.style.fontSize = col.size + 'px';
+                    charSpan.style.lineHeight = col.spacing;
+                    colDiv.appendChild(charSpan);
+                }
+
+                colDiv.addEventListener('mousedown', (e) => startDrag(e, index));
+                colDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectColumn(index);
+                });
+
+                textOverlay.appendChild(colDiv);
+
+                // Render in list
+                const listItem = document.createElement('div');
+                listItem.className = 'column-item' + (index === state.selectedColumnIndex ? ' selected' : '');
+                listItem.innerHTML = `
+                    <span class="chars-preview">${col.chars}</span>
+                    <span class="pos-info">(${col.x}, ${col.y})</span>
+                `;
+                listItem.addEventListener('click', () => selectColumn(index));
+                columnList.appendChild(listItem);
+            });
+
+            document.getElementById('columnCount').textContent = state.columns.length;
+            updateOpacity();
+        }
+
+        function selectColumn(index) {
+            state.selectedColumnIndex = index;
+            renderColumns();
+
+            if (index !== null && state.columns[index]) {
+                const col = state.columns[index];
+                document.getElementById('colX').value = col.x;
+                document.getElementById('colY').value = col.y;
+                document.getElementById('colSize').value = col.size;
+                document.getElementById('colSpacing').value = col.spacing;
+                document.getElementById('colSection').value = col.section;
+                document.getElementById('colChars').value = col.chars;
+                selectedColumnPanel.style.display = 'block';
+            } else {
+                selectedColumnPanel.style.display = 'none';
+            }
+        }
+
+        function deselectColumn() {
+            state.selectedColumnIndex = null;
+            renderColumns();
+            selectedColumnPanel.style.display = 'none';
+        }
+
+        function updateSelectedColumn() {
+            if (state.selectedColumnIndex === null) return;
+
+            const col = state.columns[state.selectedColumnIndex];
+            col.x = parseInt(document.getElementById('colX').value) || 0;
+            col.y = parseInt(document.getElementById('colY').value) || 0;
+            col.size = parseInt(document.getElementById('colSize').value) || 16;
+            col.spacing = parseFloat(document.getElementById('colSpacing').value) || 1.14;
+            col.section = document.getElementById('colSection').value;
+            col.chars = document.getElementById('colChars').value;
+
+            renderColumns();
+            updateStatus(`Updated column ${state.selectedColumnIndex + 1}`);
+        }
+
+        function deleteSelectedColumn() {
+            if (state.selectedColumnIndex === null) return;
+
+            state.columns.splice(state.selectedColumnIndex, 1);
+            state.selectedColumnIndex = null;
+            renderColumns();
+            selectedColumnPanel.style.display = 'none';
+            updateStatus('Column deleted.');
+        }
+
+        function duplicateSelectedColumn() {
+            if (state.selectedColumnIndex === null) return;
+
+            const original = state.columns[state.selectedColumnIndex];
+            const copy = {
+                ...original,
+                id: Date.now(),
+                x: original.x + 25,
+                y: original.y
+            };
+
+            state.columns.push(copy);
+            renderColumns();
+            selectColumn(state.columns.length - 1);
+            updateStatus('Column duplicated.');
+        }
+
+        // ========== DRAG HANDLING ==========
+        function startDrag(e, index) {
+            e.preventDefault();
+            state.dragging = index;
+            state.dragStart = {
+                x: e.clientX - state.columns[index].x,
+                y: e.clientY - state.columns[index].y
+            };
+            selectColumn(index);
+        }
+
+        function onDrag(e) {
+            if (state.dragging === null) return;
+
+            const col = state.columns[state.dragging];
+            col.x = Math.round(e.clientX - state.dragStart.x);
+            col.y = Math.round(e.clientY - state.dragStart.y);
+
+            // Update position inputs in real-time
+            document.getElementById('colX').value = col.x;
+            document.getElementById('colY').value = col.y;
+
+            // Update just the position, not full re-render
+            const colDiv = textOverlay.children[state.dragging];
+            if (colDiv) {
+                colDiv.style.left = col.x + 'px';
+                colDiv.style.top = col.y + 'px';
+            }
+
+            // Update list item
+            const listItem = columnList.children[state.dragging];
+            if (listItem) {
+                listItem.querySelector('.pos-info').textContent = `(${col.x}, ${col.y})`;
+            }
+        }
+
+        function endDrag() {
+            if (state.dragging !== null) {
+                updateStatus(`Column ${state.dragging + 1} positioned at (${state.columns[state.dragging].x}, ${state.columns[state.dragging].y})`);
+            }
+            state.dragging = null;
+            state.dragStart = null;
+        }
+
+        // ========== OPACITY ==========
+        function updateOpacity() {
+            const opacity = document.getElementById('textOpacity').value / 100;
+            document.documentElement.style.setProperty('--text-opacity', opacity);
+        }
+
+        function updateImageOpacity() {
+            const opacity = document.getElementById('imageOpacity').value / 100;
+            document.getElementById('originalImage').style.opacity = opacity;
+        }
+
+        function updateBlend() {
+            const value = document.getElementById('blendSlider').value;
+            const textOpacity = value / 100;
+            const imageOpacity = 1 - (value / 200);  // 100% to 50%
+
+            document.documentElement.style.setProperty('--text-opacity', textOpacity);
+            document.getElementById('originalImage').style.opacity = imageOpacity;
+        }
+
+        // ========== EXPORT/IMPORT ==========
+        function exportJSON() {
+            const layout = state.columns.map(col => ({
+                type: col.section === 'spine' ? 'spine' :
+                      col.section === 'title' ? 'title' :
+                      col.section === 'credit' ? 'credit' : 'text',
+                section: col.section,
+                chars: col.chars,
+                x: col.x,
+                y: col.y,
+                size: col.size,
+                spacing: col.spacing
+            }));
+
+            const json = JSON.stringify(layout, null, 2);
+            outputBox.textContent = `const textLayout = ${json};`;
+            updateStatus('Exported layout data. Copy from the output box.');
+
+            // Also copy to clipboard
+            navigator.clipboard.writeText(`const textLayout = ${json};`).then(() => {
+                updateStatus('Exported and copied to clipboard!');
+            }).catch(() => {
+                updateStatus('Exported. Select and copy from the output box.');
+            });
+        }
+
+        function importJSON() {
+            const input = prompt('Paste textLayout JSON array:');
+            if (!input) return;
+
+            try {
+                // Try to parse - handle both "const textLayout = [...]" and just "[...]"
+                let data;
+                if (input.includes('const textLayout')) {
+                    const match = input.match(/\[[\s\S]*\]/);
+                    if (match) data = JSON.parse(match[0]);
+                } else {
+                    data = JSON.parse(input);
+                }
+
+                if (!Array.isArray(data)) throw new Error('Not an array');
+
+                state.columns = data.map((item, i) => ({
+                    id: Date.now() + i,
+                    chars: item.chars,
+                    section: item.section || 'text',
+                    x: item.x || 0,
+                    y: item.y || 0,
+                    size: item.size || 16,
+                    spacing: item.spacing || 1.14
+                }));
+
+                renderColumns();
+                updateStatus(`Imported ${state.columns.length} columns.`);
+            } catch (e) {
+                alert('Failed to parse JSON: ' + e.message);
+            }
+        }
+
+        function clearAll() {
+            if (!confirm('Clear all columns?')) return;
+            state.columns = [];
+            state.selectedColumnIndex = null;
+            renderColumns();
+            selectedColumnPanel.style.display = 'none';
+            updateStatus('All columns cleared.');
+        }
+
+        // ========== UTILITIES ==========
+        function updateStatus(msg) {
+            document.getElementById('statusBar').textContent = msg;
+        }
+
+        // ========== INIT ==========
+        init();
+    </script>
+</body>
+</html>

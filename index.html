@@ -869,6 +869,11 @@
                     if (column.spacing) {
                         charSpan.style.lineHeight = column.spacing;
                     }
+                    // Large spine characters: 15% wider, 15% flatter
+                    if (column.type === 'spine' && column.size >= 27) {
+                        charSpan.style.display = 'inline-block';
+                        charSpan.style.transform = 'scaleX(1.15) scaleY(0.8)';
+                    }
 
                     charSpan.addEventListener('mouseenter', handleCharHover);
                     charSpan.addEventListener('click', handleCharClick);
